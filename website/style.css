@@ -218,6 +218,26 @@ p {
   color: var(--text-main);
 }
 
+.brand-logo-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.45));
+  transition: transform 0.3s ease, filter 0.3s ease;
+  flex-shrink: 0;
+}
+
+.brand-logo-img.mini {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+}
+
+.brand-link:hover .brand-logo-img {
+  transform: scale(1.08) rotate(3deg);
+  filter: drop-shadow(0 0 16px rgba(192, 132, 252, 0.7));
+}
+
 .brand-badge {
   width: 32px;
   height: 32px;
@@ -1204,15 +1224,39 @@ p {
   color: var(--text-main);
 }
 
-.btn-snap-store {
+.btn-snap-hero {
   display: inline-flex;
   align-items: center;
-  transition: transform 0.2s ease, filter 0.2s ease;
+  gap: 10px;
+  background: linear-gradient(135deg, rgba(233, 84, 32, 0.16), rgba(119, 41, 83, 0.28));
+  border: 1px solid rgba(233, 84, 32, 0.55);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 14px 28px;
+  border-radius: 16px;
+  text-decoration: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 8px 25px rgba(233, 84, 32, 0.22);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 
-.btn-snap-store:hover {
-  transform: translateY(-2px) scale(1.02);
-  filter: drop-shadow(0 6px 15px rgba(130, 190, 160, 0.4));
+.btn-snap-hero:hover {
+  transform: translateY(-3px);
+  border-color: #E95420;
+  background: linear-gradient(135deg, rgba(233, 84, 32, 0.28), rgba(119, 41, 83, 0.4));
+  box-shadow: 0 12px 35px rgba(233, 84, 32, 0.45);
+}
+
+.btn-snap-hero .snap-icon-svg {
+  color: #E95420;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.btn-snap-hero:hover .snap-icon-svg {
+  transform: scale(1.15) rotate(6deg);
 }
 
 .snap-highlight {

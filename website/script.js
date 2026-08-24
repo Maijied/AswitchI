@@ -330,3 +330,74 @@ if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
     );
   });
 }
+
+// 8. High-Performance Animated Tab Favicon Engine
+(function initAnimatedFavicon() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 32;
+  canvas.height = 32;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  const faviconLink = document.querySelector("link[rel~='icon']") || document.createElement('link');
+  faviconLink.rel = 'icon';
+  faviconLink.type = 'image/png';
+  document.head.appendChild(faviconLink);
+
+  let angle = 0;
+  let pulse = 0;
+
+  function renderFaviconFrame() {
+    ctx.clearRect(0, 0, 32, 32);
+
+    // Dark Rounded Squircle Base
+    ctx.fillStyle = '#1e1b4b';
+    ctx.beginPath();
+    if (ctx.roundRect) {
+      ctx.roundRect(2, 2, 28, 28, 7);
+    } else {
+      ctx.rect(2, 2, 28, 28);
+    }
+    ctx.fill();
+
+    // Cyber Border
+    ctx.strokeStyle = '#4338ca';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Pulsing/Rotating Circuit Orbit
+    ctx.save();
+    ctx.translate(16, 16);
+    ctx.rotate(angle);
+    ctx.strokeStyle = '#38bdf8';
+    ctx.setLineDash([4, 4]);
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.arc(0, 0, 8.5 + Math.sin(pulse) * 1.2, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+
+    // Central Switcher Lightning Core
+    ctx.save();
+    ctx.translate(16, 16);
+    ctx.fillStyle = '#c084fc';
+    ctx.beginPath();
+    ctx.moveTo(1.2, -6.5);
+    ctx.lineTo(-3.8, 1);
+    ctx.lineTo(0.2, 1);
+    ctx.lineTo(-1, 6.5);
+    ctx.lineTo(4.8, -1);
+    ctx.lineTo(1, -1);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+
+    faviconLink.href = canvas.toDataURL('image/png');
+    angle += 0.05;
+    pulse += 0.1;
+  }
+
+  // Update animated favicon at ~15fps (smooth & battery efficient)
+  setInterval(renderFaviconFrame, 66);
+})();
+

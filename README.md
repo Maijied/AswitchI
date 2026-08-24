@@ -1,7 +1,7 @@
 # AswitchI — macOS AI Switcher & Launchpad for Ubuntu Linux
 
 <div align="center">
-  <img src="assets/icon.svg" width="120" height="120" alt="AswitchI Logo" />
+  <img src="assets/icon_animated.svg" width="130" height="130" alt="AswitchI Animated Logo" />
   <br />
   <strong>By Lorapok Labs</strong> (Founder & Architect: Maizied)
   <br /><br />

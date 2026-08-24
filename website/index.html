@@ -39,7 +39,8 @@
     <meta name="keywords" content="AswitchI, Snap Store, snapcraft, snap install aswitchi, Lorapok Labs, Linux Dock, AI Switcher, macOS Launchpad Linux, Cursor IDE, Claude, ChatGPT, WebKitGTK" />
     <meta name="author" content="Mohammad Maizied Hasan Majumder" />
     <link rel="canonical" href="https://aswitchi.lorapok.tech/" />
-    <link rel="icon" type="image/svg+xml" href="icons/aswitchi.svg">
+    <link rel="icon" type="image/svg+xml" href="assets/icon_animated.svg">
+    <link rel="alternate icon" type="image/png" href="assets/icon.png">
 
     <!-- Open Graph / Social Sharing -->
     <meta property="og:type" content="website" />
@@ -120,9 +121,7 @@
     <header class="navbar-wrapper">
         <nav class="nav-container glass-morphism">
             <a href="#home" class="brand-link">
-                <div class="brand-badge">
-                    <div class="brand-core"></div>
-                </div>
+                <img src="assets/icon_animated.svg" alt="AswitchI Logo" class="brand-logo-img" width="34" height="34">
                 <span class="brand-title">AswitchI</span>
                 <span class="brand-tag">v1.0</span>
             </a>
@@ -173,20 +172,12 @@
                     The unified, hardware-accelerated macOS Launchpad & Dock crafted for Linux. Effortlessly switch between Desktop AI IDEs, CLI Agents, and encrypted Web AI sessions.
                 </p>
 
-                <!-- Snap Store Tags -->
-                <div class="snap-tags-container reveal-node">
-                    <a href="https://snapcraft.io/aswitchi" target="_blank" rel="noopener" class="snap-badge-pill">
-                        <span class="snap-dot"></span>
-                        <span>snap: <strong>aswitchi</strong></span>
-                    </a>
-                    <span class="snap-tag">channel: <strong>stable</strong></span>
-                    <span class="snap-tag">confinement: <strong>classic</strong></span>
-                    <span class="snap-tag">arch: <strong>amd64 / arm64</strong></span>
-                </div>
-
                 <div class="hero-cta-group reveal-node">
-                    <a href="https://snapcraft.io/aswitchi" target="_blank" rel="noopener" class="btn-snap-store" onclick="trackEvent('CTA', 'click', 'Hero Snap Store Button')">
-                        <img src="https://snapcraft.io/static/images/badges/en/snap-store-black.svg" alt="Get it from the Snap Store" height="46">
+                    <a href="https://snapcraft.io/aswitchi" target="_blank" rel="noopener" class="btn-snap-hero" onclick="trackEvent('CTA', 'click', 'Hero Snap Store Button')">
+                        <svg class="snap-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0L1.75 6v12L12 24l10.25-6V6L12 0zm0 2.25l8.25 4.8v9.6L12 21.45l-8.25-4.8V7.05L12 2.25zM12 4.5l-6 3.5v7l6 3.5 6-3.5v-7l-6-3.5z"/>
+                        </svg>
+                        <span>Get on Snap Store</span>
                     </a>
                     <a href="#install" class="btn-primary-glow" onclick="trackEvent('CTA', 'click', 'Hero Install Linux')">
                         <span>Install Instructions</span>
@@ -423,7 +414,7 @@
         <div class="footer-container glass-morphism">
             <div class="footer-brand">
                 <div class="brand-link">
-                    <div class="brand-badge mini"><div class="brand-core"></div></div>
+                    <img src="assets/icon_animated.svg" alt="AswitchI Logo" class="brand-logo-img mini" width="28" height="28">
                     <span class="brand-title">AswitchI</span>
                 </div>
                 <p class="footer-desc">An engineering project by <strong>Lorapok Labs</strong>. Crafted for high-speed AI developer workflows.</p>
