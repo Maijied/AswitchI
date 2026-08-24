@@ -1,17 +1,19 @@
 name: aswitchi
 version: '1.0'
 summary: Native Ubuntu Launchpad & AI Switcher
-description: 'AswitchI by Lorapok Labs perfectly emulates the macOS Launchpad and
-  Dock experience on Ubuntu, specialized entirely for AI productivity.
+description: |
+  **AswitchI** by Lorapok Labs brings the fluid, intuitive experience of the macOS Launchpad and 3D Dock directly to Ubuntu, engineered exclusively for AI developer productivity.
 
+  It serves as a unified, central dashboard that automatically scans, organizes, and launches your entire AI engineering stack with zero friction:
 
-  It functions as a unified, fluid dashboard for scanning, organizing, and launching
-  Desktop AI IDEs (Cursor, Windsurf), CLI AI Agents (Cline, Aider), and Web AIs (ChatGPT,
-  Claude) seamlessly.
+  * **Desktop AI IDEs:** One-click access to specialized environments like Cursor and Windsurf.
+  * **CLI AI Agents:** Instantly deploy terminal-based agents like Cline, Aider, and Antigravity.
+  * **Persistent Web AIs:** Run ChatGPT, Claude, and Gemini in isolated, persistent web sessions without needing multiple browser tabs.
 
+  Powered by a lightweight _WebKit2GTK_ architecture, AswitchI guarantees blazing-fast hardware acceleration, seamless context switching, and deep native Linux desktop integration. 
 
-  Powered by WebKit2GTK for blazing-fast hardware acceleration and native desktop
-  integration.'
+  Discover a cleaner way to build with AI.
+  Learn more: https://aswitchi.lorapok.tech
 grade: stable
 confinement: classic
 base: core22
@@ -40,7 +42,7 @@ apps:
       PYTHONPATH: $SNAP/opt/aswitchi
       GI_TYPELIB_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET/girepository-1.0:$SNAP/usr/lib/girepository-1.0
 title: AswitchI
-icon: assets/snap_icon.png
+icon: assets/icon.png
 license: GPL-3.0-or-later
 contact: maizied@lorapok.tech
 issues: https://github.com/Maijied/AswitchI/issues

@@ -1,0 +1,46 @@
+name: 🚀 Manual Publish to Snap Store
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: 'Release Channel (e.g., stable, candidate, beta, edge)'
+        required: true
+        default: 'stable'
+        type: choice
+        options:
+          - stable
+          - candidate
+          - beta
+          - edge
+
+jobs:
+  publish-manual:
+    name: 📦 Deploy to Snap Store
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Download Latest amd64 Snap Build
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: main-pipeline.yml
+          name: aswitchi-amd64-snap
+          path: snaps/amd64/
+          
+      - name: 📥 Download Latest arm64 Snap Build
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: main-pipeline.yml
+          name: aswitchi-arm64-snap
+          path: snaps/arm64/
+
+      - name: 🚀 Publish to Canonical Snap Store
+        uses: snapcore/action-publish@v1
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+        with:
+          store_login: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+          snap: snaps/*/*.snap
+          release: ${{ github.event.inputs.channel }}
+          
+      - name: ✅ Summary
+        run: echo "Successfully pushed to Snap Store on the '${{ github.event.inputs.channel }}' channel!"

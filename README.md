@@ -5,9 +5,10 @@
   <br />
   <strong>By Lorapok Labs</strong> (Founder & Architect: Maizied)
   <br /><br />
-  <a href="https://snapcraft.io/aswitchi"><img src="https://snapcraft.io/static/images/badges/en/snap-store-black.svg" alt="Get it from the Snap Store" height="42" /></a>
+  [![Get it from the Snap Store](https://snapcraft.io/en/dark/install.svg)](https://snapcraft.io/aswitchi)
+  [![aswitchi](https://snapcraft.io/aswitchi/badge.svg)](https://snapcraft.io/aswitchi)
+  [![aswitchi](https://snapcraft.io/aswitchi/trending.svg?name=0)](https://snapcraft.io/aswitchi)
   <br /><br />
-  <a href="https://snapcraft.io/aswitchi"><img src="https://img.shields.io/badge/Snap_Store-aswitchi-82BEA0?style=for-the-badge&logo=snapcraft&logoColor=white" alt="Snapcraft" /></a>
   <a href="https://aswitchi.lorapok.tech"><img src="https://img.shields.io/badge/Website-aswitchi.lorapok.tech-00F2FE?style=for-the-badge&logo=googlechrome&logoColor=black" alt="Website" /></a>
   <a href="#features"><img src="https://img.shields.io/badge/Platform-Ubuntu%20%7C%20Debian%20%7C%20Arch-E95420?style=for-the-badge&logo=ubuntu&logoColor=white" alt="Ubuntu" /></a>
   <a href="#architecture"><img src="https://img.shields.io/badge/Architecture-GTK3%20%7C%20WebKit2-4F46E5?style=for-the-badge" alt="GTK3 WebKit2" /></a>

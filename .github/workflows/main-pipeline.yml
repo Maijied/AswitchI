@@ -126,43 +126,6 @@ jobs:
           name: aswitchi-cli-tarball
           path: dist/aswitchi-cli-linux.tar.gz
 
-  # ==========================================================
-  # JOB 4: Publish to Snap Store
-  # ==========================================================
-  publish-snap:
-    name: 📦 Publish to Snap Store
-    needs: [quality-security-gate, build-desktop]
-    runs-on: ubuntu-latest
-    steps:
-      - name: 📥 Check out repository
-        uses: actions/checkout@v4
-
-      - name: 📥 Download amd64 Snap Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: aswitchi-amd64-snap
-          path: snaps/
-
-      - name: 📥 Download arm64 Snap Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: aswitchi-arm64-snap
-          path: snaps/
-
-      - name: 🚀 Publish to Canonical Snap Store (if secret present)
-        if: env.SNAPCRAFT_STORE_CREDENTIALS != ''
-        uses: snapcore/action-publish@v1
-        env:
-          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
-        with:
-          store_login: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
-          snap: snaps/*.snap
-          release: stable
-
-      - name: ℹ️ Snap Store Status
-        if: env.SNAPCRAFT_STORE_CREDENTIALS == ''
-        run: |
-          echo "Snap binaries successfully built for amd64 & arm64. Ready for instant upload to Snapcraft."
 
   # ==========================================================
   # JOB 5: Build & Deploy Website
@@ -221,7 +184,7 @@ jobs:
   # ==========================================================
   pipeline-summary:
     name: 📊 Pipeline Summary
-    needs: [quality-security-gate, build-desktop, build-cli-package, publish-snap, build-and-deploy-website, aggregate-release]
+    needs: [quality-security-gate, build-desktop, build-cli-package, build-and-deploy-website, aggregate-release]
     runs-on: ubuntu-latest
     if: always()
     steps:
