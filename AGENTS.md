@@ -22,3 +22,8 @@ If building Snap packages, always use `confinement: classic` so the app can scan
 ## Deployment & CI/CD
 - GitHub Actions automatically test code and deploy the `/website` directory to Cloudflare Pages (`aswitchi.lorapok.tech`).
 - Ensure all pull requests pass `tests/run_all_tests.py`.
+
+## Cloudflare Pages Deployments
+- When configuring GitHub Actions to deploy to Cloudflare Pages (e.g., using `cloudflare/pages-action`), you MUST ensure the Pages project already exists.
+- The action will fail with a 404 if the project is not created beforehand.
+- You can create the project via the Cloudflare API if you have the API token.
