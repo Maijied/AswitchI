@@ -1,9 +1,78 @@
 /**
- * AswitchI — Modern Interactive Script
- * Features: Cyber Mesh Canvas, Live Simulator, Theme Toggle, Scroll Progress, Copy CLI
+ * AswitchI — Modern Interactive Script (Lorapok Labs Engine)
+ * Features: Cyber Mesh Canvas, Telemetry HUD, Web Audio SFX Synthesis, GA4 Event Tracking
  */
 
-// 1. Scroll Progress Bar
+// 1. Web Audio API Futuristic Sound Synthesis (Zero external asset latency)
+class SoundFX {
+  constructor() {
+    this.ctx = null;
+    this.enabled = localStorage.getItem('aswitchi-sfx') !== 'false';
+    this.updateIcon();
+  }
+
+  init() {
+    if (!this.ctx && typeof AudioContext !== 'undefined') {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      this.ctx = new AudioCtx();
+    }
+  }
+
+  playBeep(freq = 600, duration = 0.06, type = 'sine') {
+    if (!this.enabled) return;
+    try {
+      this.init();
+      if (!this.ctx) return;
+      if (this.ctx.state === 'suspended') this.ctx.resume();
+
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(freq * 1.5, this.ctx.currentTime + duration);
+
+      gain.gain.setValueAtTime(0.04, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start();
+      osc.stop(this.ctx.currentTime + duration);
+    } catch (e) {}
+  }
+
+  playSwitch() {
+    this.playBeep(880, 0.08, 'triangle');
+  }
+
+  playLaunch() {
+    this.playBeep(440, 0.15, 'sine');
+  }
+
+  toggle() {
+    this.enabled = !this.enabled;
+    localStorage.setItem('aswitchi-sfx', this.enabled);
+    this.updateIcon();
+    if (this.enabled) this.playSwitch();
+  }
+
+  updateIcon() {
+    const icon = document.getElementById('sfx-icon');
+    if (icon) {
+      icon.textContent = this.enabled ? '🔊' : '🔇';
+    }
+  }
+}
+
+const sfx = new SoundFX();
+const sfxBtn = document.getElementById('sfx-toggle');
+if (sfxBtn) {
+  sfxBtn.addEventListener('click', () => sfx.toggle());
+}
+
+// 2. Scroll Progress Bar
 window.addEventListener('scroll', () => {
   const scrollProgress = document.getElementById('scroll-progress');
   if (scrollProgress) {
@@ -13,10 +82,11 @@ window.addEventListener('scroll', () => {
   }
 }, { passive: true });
 
-// 2. Interactive Theme Toggle (Dark / Light)
+// 3. Interactive Theme Toggle (Dark / Light)
 const themeToggle = document.getElementById('theme-toggle');
 if (themeToggle) {
   themeToggle.addEventListener('click', () => {
+    sfx.playSwitch();
     const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
     
@@ -27,10 +97,11 @@ if (themeToggle) {
     if (metaColorScheme) {
       metaColorScheme.content = newTheme;
     }
+    window.trackEvent('Settings', 'toggle_theme', newTheme);
   });
 }
 
-// 3. Live Simulator Deck Data & Interaction
+// 4. Live Simulator Deck Data & Interaction
 const simData = {
   ides: [
     {
@@ -124,6 +195,7 @@ function renderSimDeck(category) {
 }
 
 window.simulateLaunch = function(title, cmd) {
+  sfx.playLaunch();
   const statusText = document.getElementById('sim-status-text');
   if (statusText) {
     statusText.innerHTML = `<span style="color:var(--cyan)">🚀 Launching ${title}...</span>`;
@@ -131,24 +203,29 @@ window.simulateLaunch = function(title, cmd) {
       statusText.innerHTML = `Active Session (${title} Running)`;
     }, 1500);
   }
+  window.trackEvent('Simulator', 'launch_app', title);
 };
 
 const tabButtons = document.querySelectorAll('.sim-tab');
 tabButtons.forEach(btn => {
   btn.addEventListener('click', () => {
+    sfx.playSwitch();
     tabButtons.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    renderSimDeck(btn.getAttribute('data-category'));
+    const cat = btn.getAttribute('data-category');
+    renderSimDeck(cat);
+    window.trackEvent('Simulator', 'switch_tab', cat);
   });
 });
 
 // Initial Deck Render
 renderSimDeck('ides');
 
-// 4. Copy Terminal Command
+// 5. Copy Terminal Command
 const copyBtn = document.getElementById('copy-btn');
 if (copyBtn) {
   copyBtn.addEventListener('click', () => {
+    sfx.playSwitch();
     const textToCopy = "aswitchi --status\naswitchi --launch claude";
     navigator.clipboard.writeText(textToCopy).then(() => {
       const copyText = document.getElementById('copy-text');
@@ -157,10 +234,11 @@ if (copyBtn) {
         setTimeout(() => { copyText.textContent = "Copy"; }, 2000);
       }
     });
+    window.trackEvent('CLI', 'copy_command', 'aswitchi_status');
   });
 }
 
-// 5. Ambient Cyber Canvas Particle Animation
+// 6. Ambient Cyber Canvas Particle Animation
 const canvas = document.getElementById('cyber-canvas');
 if (canvas) {
   const ctx = canvas.getContext('2d');
@@ -231,7 +309,7 @@ if (canvas) {
   animateCanvas();
 }
 
-// 6. GSAP Smooth Scroll Enhancements
+// 7. GSAP Smooth Scroll Enhancements
 if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 

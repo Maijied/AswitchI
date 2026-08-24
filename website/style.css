@@ -1031,3 +1031,120 @@ p {
   .hero-headline { font-size: 2.5rem; }
   .install-card { padding: 30px 20px; }
 }
+
+/* ==========================================================
+   Cyber BG Grid & Telemetry HUD (Lorapok Labs Design Language)
+   ========================================================== */
+
+.cyber-bg-grid {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: 
+    linear-gradient(rgba(0, 242, 254, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 242, 254, 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.telemetry-section {
+  padding: 30px 0 60px;
+  content-visibility: auto;
+}
+
+.telemetry-hud {
+  padding: 24px 32px;
+  background: rgba(9, 14, 30, 0.88);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 242, 254, 0.12);
+}
+
+.hud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}
+
+.hud-indicator-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hud-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--emerald);
+  box-shadow: 0 0 10px var(--emerald);
+  animation: pulse-glow 1.5s infinite;
+}
+
+.hud-title {
+  color: var(--cyan);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.hud-socket {
+  color: var(--text-muted);
+}
+
+.hud-socket strong {
+  color: var(--emerald);
+}
+
+.hud-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 18px;
+}
+
+.hud-stat-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.hud-stat-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(0, 242, 254, 0.3);
+}
+
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+}
+
+.stat-value {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.text-cyan { color: var(--cyan); text-shadow: 0 0 12px var(--cyan-glow); }
+.text-emerald { color: var(--emerald); text-shadow: 0 0 12px var(--emerald-glow); }
+.text-purple { color: #d8b4fe; text-shadow: 0 0 12px var(--purple-glow); }
+.text-amber { color: var(--amber); text-shadow: 0 0 12px rgba(245, 158, 11, 0.3); }
+
+.stat-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
