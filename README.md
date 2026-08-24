@@ -5,9 +5,9 @@
   <br />
   <strong>By Lorapok Labs</strong> (Founder & Architect: Maizied)
   <br /><br />
-  [![Get it from the Snap Store](https://snapcraft.io/en/dark/install.svg)](https://snapcraft.io/aswitchi)
-  [![aswitchi](https://snapcraft.io/aswitchi/badge.svg)](https://snapcraft.io/aswitchi)
-  [![aswitchi](https://snapcraft.io/aswitchi/trending.svg?name=0)](https://snapcraft.io/aswitchi)
+  <a href="https://snapcraft.io/aswitchi"><img src="https://snapcraft.io/en/dark/install.svg" alt="Get it from the Snap Store" /></a>
+  <a href="https://snapcraft.io/aswitchi"><img src="https://snapcraft.io/aswitchi/badge.svg" alt="aswitchi" /></a>
+  <a href="https://snapcraft.io/aswitchi"><img src="https://snapcraft.io/aswitchi/trending.svg?name=0" alt="aswitchi trending" /></a>
   <br /><br />
   <a href="https://aswitchi.lorapok.tech"><img src="https://img.shields.io/badge/Website-aswitchi.lorapok.tech-00F2FE?style=for-the-badge&logo=googlechrome&logoColor=black" alt="Website" /></a>
   <a href="#features"><img src="https://img.shields.io/badge/Platform-Ubuntu%20%7C%20Debian%20%7C%20Arch-E95420?style=for-the-badge&logo=ubuntu&logoColor=white" alt="Ubuntu" /></a>
