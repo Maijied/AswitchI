@@ -401,3 +401,67 @@ if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
   setInterval(renderFaviconFrame, 66);
 })();
 
+
+// Dynamic Snap Store Versioning Tracker
+async function fetchSnapVersions() {
+    const container = document.getElementById('snap-channels-container');
+    if (!container) return;
+
+    try {
+        const response = await fetch('https://api.snapcraft.io/v2/snaps/info/aswitchi', {
+            headers: {
+                'Snap-Device-Series': '16'
+            }
+        });
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                // If 404, it means the snap is still pending manual review for classic confinement
+                container.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; padding: 6px 10px; background: rgba(100, 255, 218, 0.05); border-radius: 4px; font-family: monospace; font-size: 0.85rem;">
+                        <span style="color: #cbd5e1; font-weight: bold;">ALL CHANNELS</span>
+                        <span style="color: #fbbf24;">Pending Canonical Review</span>
+                    </div>
+                `;
+                return;
+            }
+            throw new Error('API Error');
+        }
+
+        const data = await response.json();
+        const channelMap = data['channel-map'];
+        
+        let html = '';
+        const channels = ['stable', 'candidate', 'beta', 'edge'];
+        
+        channels.forEach(ch => {
+            // Find the latest amd64 release for this channel
+            const release = channelMap.find(item => item.channel.name === ch && item.channel.architecture === 'amd64' && item.channel.track === 'latest');
+            
+            let version = release ? release.version : 'Not published';
+            let color = release ? '#64ffda' : '#64748b';
+            
+            html += `
+                <div style="display: flex; justify-content: space-between; padding: 6px 10px; background: rgba(100, 255, 218, 0.05); border-radius: 4px; font-family: monospace; font-size: 0.85rem;">
+                    <span style="color: #cbd5e1; font-weight: bold;">${ch.toUpperCase()}</span>
+                    <span style="color: ${color};">${version}</span>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+        
+    } catch (error) {
+        container.innerHTML = `
+            <div style="display: flex; justify-content: space-between; padding: 6px 10px; background: rgba(100, 255, 218, 0.05); border-radius: 4px; font-family: monospace; font-size: 0.85rem;">
+                <span style="color: #cbd5e1; font-weight: bold;">STATUS</span>
+                <span style="color: #ef4444;">API Unavailable</span>
+            </div>
+        `;
+    }
+}
+
+// Initialize the fetch when DOM loads
+document.addEventListener('DOMContentLoaded', () => {
+    fetchSnapVersions();
+});

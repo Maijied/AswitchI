@@ -1,5 +1,5 @@
 name: aswitchi
-version: '1.0'
+version: git
 summary: Native Ubuntu Launchpad & AI Switcher
 description: |
   **AswitchI** by Lorapok Labs brings the fluid, intuitive experience of the macOS Launchpad and 3D Dock directly to Ubuntu, engineered exclusively for AI developer productivity.
