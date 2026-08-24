@@ -57,7 +57,6 @@ jobs:
         # Building for amd64 and arm64. GitHub provides ubuntu-24.04-arm for open-source repos!
         os: [ubuntu-latest, ubuntu-24.04-arm]
     runs-on: ${{ matrix.os }}
-    continue-on-error: true # ARM runner might not be enabled for this specific repo, so we allow failure
     steps:
       - uses: actions/checkout@v4
 
