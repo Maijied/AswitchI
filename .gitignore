@@ -1,0 +1,29 @@
+# Snapcraft Build Cache
+parts/
+stage/
+prime/
+snaps/
+*.snap
+*.snap.partial*
+
+# Python Build & Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+dist/
+build/
+*.egg-info/
+
+# Logs & Temp Files
+logs/
+*.log
+release-assets/
+/tmp/
+
+# OS / Editor Files
+.DS_Store
+*.swp
+*.swo
+*~

@@ -1,0 +1,126 @@
+name: 🔄 Snapcraft 9 Release & Rollback Operations
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: "Operation to execute"
+        required: true
+        type: choice
+        options:
+          - "check_status"
+          - "promote_release"
+          - "progressive_release"
+          - "rollback"
+          - "close_channel"
+        default: "check_status"
+
+      revision:
+        description: "Target Revision Number (Required for promote, progressive, rollback)"
+        required: false
+        type: string
+        default: "1"
+
+      channel:
+        description: "Destination / Target Channel"
+        required: true
+        type: choice
+        options:
+          - "stable"
+          - "candidate"
+          - "beta"
+          - "edge"
+        default: "stable"
+
+      progressive_percentage:
+        description: "Progressive rollout % (for progressive_release only, e.g. 10, 25, 50, 100)"
+        required: false
+        type: string
+        default: "20"
+
+      reason:
+        description: "Audit Log Note / Reason for operation"
+        required: false
+        type: string
+        default: "Routine release operation"
+
+concurrency:
+  group: snap-operations
+  cancel-in-progress: false
+
+jobs:
+  snap-ops:
+    name: ⚡ Snapcraft 9 Operation (${{ inputs.operation }})
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Check out repository
+        uses: actions/checkout@v4
+
+      - name: 🛠️ Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 📦 Install Snapcraft
+        run: |
+          sudo snap install snapcraft --classic
+
+      - name: 🔑 Authenticate with Snapcraft
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+        run: |
+          if [ -n "$SNAPCRAFT_STORE_CREDENTIALS" ]; then
+            echo "$SNAPCRAFT_STORE_CREDENTIALS" | snapcraft login --with -
+          else
+            echo "⚠️ No SNAPCRAFT_STORE_CREDENTIALS secret configured. Proceeding with environment auth if available."
+          fi
+
+      - name: 🚀 Execute Snapcraft 9 Operation
+        run: |
+          OP="${{ inputs.operation }}"
+          REV="${{ inputs.revision }}"
+          CHANNEL="${{ inputs.channel }}"
+          PCT="${{ inputs.progressive_percentage }}"
+          REASON="${{ inputs.reason }}"
+
+          echo "=========================================="
+          echo "Snapcraft 9 Operation: $OP"
+          echo "Target Channel:        $CHANNEL"
+          echo "Target Revision:       $REV"
+          echo "Progressive %:         $PCT"
+          echo "Audit Reason:          $REASON"
+          echo "=========================================="
+
+          case "$OP" in
+            check_status)
+              python3 scripts/snap_ops.py status
+              python3 scripts/snap_ops.py revisions
+              ;;
+            promote_release)
+              python3 scripts/snap_ops.py release "$REV" "$CHANNEL"
+              ;;
+            progressive_release)
+              python3 scripts/snap_ops.py release "$REV" "$CHANNEL" --progressive "$PCT"
+              ;;
+            rollback)
+              echo "🚨 EXECUTING IMMEDIATE ROLLBACK TO REVISION $REV ON $CHANNEL"
+              python3 scripts/snap_ops.py rollback "$REV" --channel "$CHANNEL"
+              ;;
+            close_channel)
+              python3 scripts/snap_ops.py close "$CHANNEL"
+              ;;
+            *)
+              echo "❌ Unknown operation: $OP"
+              exit 1
+              ;;
+          esac
+
+      - name: 📊 Record Operation Summary
+        if: always()
+        run: |
+          echo "### 🔄 Snapcraft 9 Operations Report" >> $GITHUB_STEP_SUMMARY
+          echo "- **Operation**: \`${{ inputs.operation }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Channel**: \`${{ inputs.channel }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Target Revision**: \`${{ inputs.revision }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Reason**: ${{ inputs.reason }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Documentation Reference**: [Canonical Snapcraft 9 Revisions & Releases Guide](https://ubuntu.com/docs/snapcraft/9/how-to/publishing/manage-revisions-and-releases/)" >> $GITHUB_STEP_SUMMARY

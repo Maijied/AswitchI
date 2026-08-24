@@ -38,8 +38,12 @@ jobs:
       - name: ⚡ Cache APT Dependencies
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: python3-gi python3-gi-cairo gir1.2-gtk-3.0 gir1.2-webkit2-4.1 xvfb
-          version: 1.0
+          packages: python3-gi python3-gi-cairo gir1.2-gtk-3.0 gir1.2-webkit2-4.1 librsvg2-bin xvfb
+          version: 1.1
+
+      - name: 🎨 Verify Central Asset Synchronization
+        run: |
+          python3 scripts/sync_assets.py --check
 
       - name: 🛠️ Set up Desktop Shortcuts & Permissions
         run: |
@@ -54,7 +58,7 @@ jobs:
 
       - name: 🔒 Security & Code Integrity Linting
         run: |
-          python3 -m py_compile aswitchi_native.py src/backend/*.py
+          python3 -m py_compile aswitchi_native.py src/backend/*.py scripts/*.py
 
       - name: 📤 Upload Test Artifacts
         if: always()
@@ -227,9 +231,16 @@ jobs:
           echo "### 📦 Multi-Architecture Matrix & Release Artifacts" >> $GITHUB_STEP_SUMMARY
           echo "| Phase / Job | Target | Status |" >> $GITHUB_STEP_SUMMARY
           echo "| :--- | :--- | :--- |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Quality & Security Gate** | PyUnit (26/26 Tests) + AST Linting | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Quality & Security Gate** | PyUnit (26/26 Tests) + Central Asset Verification | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
           echo "| **Desktop Build (amd64)** | Ubuntu x86_64 Snap Package | ✅ Built Successfully |" >> $GITHUB_STEP_SUMMARY
           echo "| **Desktop Build (arm64)** | Ubuntu aarch64 Snap Package | ✅ Built Successfully |" >> $GITHUB_STEP_SUMMARY
           echo "| **Python & CLI Package** | Standalone Linux CLI tarball | ✅ Packaged |" >> $GITHUB_STEP_SUMMARY
           echo "| **Website & SEO Agent** | [aswitchi.lorapok.tech](https://aswitchi.lorapok.tech/) | ✅ Deployed to GitHub Pages |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Canonical Snap Store** | [snapcraft.io/aswitchi](https://snapcraft.io/aswitchi) | ℹ️ Binary built & ready for publishing |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Canonical Snap Store** | [snapcraft.io/aswitchi](https://snapcraft.io/aswitchi) | ℹ️ Binary built & uploaded |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔄 Snapcraft 9 Channel Operations & Rollbacks" >> $GITHUB_STEP_SUMMARY
+          echo "To rollback or promote channels according to [Snapcraft 9 Docs](https://ubuntu.com/docs/snapcraft/9/how-to/publishing/manage-revisions-and-releases/):" >> $GITHUB_STEP_SUMMARY
+          echo "- **Interactive Rollback Workflow**: Run GitHub Action \`Snapcraft 9 Release & Rollback Operations\` with operation \`rollback\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **CLI Rollback**: \`python3 scripts/snap_ops.py rollback <REV> --channel stable\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Progressive Release**: \`python3 scripts/snap_ops.py release <REV> stable --progressive 20\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Channel Status**: \`python3 scripts/snap_ops.py status\`" >> $GITHUB_STEP_SUMMARY
