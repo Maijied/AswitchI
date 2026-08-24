@@ -14,6 +14,10 @@
   <a href="#architecture"><img src="https://img.shields.io/badge/Architecture-GTK3%20%7C%20WebKit2-4F46E5?style=for-the-badge" alt="GTK3 WebKit2" /></a>
   <a href="#test-suite"><img src="https://img.shields.io/badge/Tests-26%2F26%20Passing%20(100%25)-10B981?style=for-the-badge" alt="Tests" /></a>
   <a href="#lorapok-labs"><img src="https://img.shields.io/badge/Developed%20By-Lorapok%20Labs-8B5CF6?style=for-the-badge" alt="Lorapok Labs" /></a>
+  <br /><br />
+  <a href="https://youtu.be/ohT5M-uiuOE">
+    <img src="https://img.youtube.com/vi/ohT5M-uiuOE/maxresdefault.jpg" alt="AswitchI Promo Video" width="800" style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);" />
+  </a>
 </div>
 
 ---
