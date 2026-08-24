@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PROJECT_DIR="/mnt/NewVolume/Personal_Projects/AswitchI"
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ICON_PATH="${PROJECT_DIR}/assets/icon.svg"
 BIN_TARGET="${HOME}/.local/bin/aswitchi"
 DESKTOP_DIR="${HOME}/Desktop"
