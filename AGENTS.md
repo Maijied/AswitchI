@@ -32,3 +32,7 @@ If building Snap packages, always use `confinement: classic` so the app can scan
 - **Commit Messages**: Always use conventional commits (e.g., `feat:`, `fix:`, `style:`, `refactor:`, `docs:`, `chore:`).
 - **Pushing**: When committing, always push to the remote branch automatically so the CI/CD pipeline triggers immediately.
 - **Verification**: After a push, always monitor the GitHub Actions run to verify success.
+
+## Snap Deployment & Credential Vault Protocol
+- **Unique Per-App Keys**: Every Snap deployment target must use an isolated, uniquely generated Ed25519 key pair (e.g. `~/.ssh/id_ed25519_snap_aswitchi`). Never reuse deployment keys across different snaps.
+- **Vault Auto-Persistence**: All generated deployment keys, tokens, and store secrets must be persisted directly into `/mnt/NewVolume/Personal_Projects/cred/credentials.json.gpg` (using passphrase `565087`) under `snap_deployments.<app_name>`.
