@@ -27,3 +27,8 @@ If building Snap packages, always use `confinement: classic` so the app can scan
 - When configuring GitHub Actions to deploy to Cloudflare Pages (e.g., using `cloudflare/pages-action`), you MUST ensure the Pages project already exists.
 - The action will fail with a 404 if the project is not created beforehand.
 - You can create the project via the Cloudflare API if you have the API token.
+
+## Git & Version Control Specialist Rules
+- **Commit Messages**: Always use conventional commits (e.g., `feat:`, `fix:`, `style:`, `refactor:`, `docs:`, `chore:`).
+- **Pushing**: When committing, always push to the remote branch automatically so the CI/CD pipeline triggers immediately.
+- **Verification**: After a push, always monitor the GitHub Actions run to verify success.
