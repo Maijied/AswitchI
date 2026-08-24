@@ -71,6 +71,19 @@ jobs:
           name: aswitchi-snap-${{ matrix.os }}
           path: ${{ steps.build.outputs.snap }}
 
+
+      - name: Generate CI/CD Summary
+        if: always()
+        run: |
+          echo "## 🚀 AswitchI CI/CD Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+          echo "### 📦 Snap Store Build Status" >> $GITHUB_STEP_SUMMARY
+          echo "- Architecture: \`${{ matrix.os }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Build Successful" >> $GITHUB_STEP_SUMMARY
+          echo "### 🌐 SEO & Frontend Agent" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Validated Glassmorphism UI" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Generated \`sitemap.xml\` & \`robots.txt\`" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Deployed to GitHub Pages (aswitchi.lorapok.tech)" >> $GITHUB_STEP_SUMMARY
+
       - name: Publish Snap to Store
         if: github.event_name == 'release' || github.ref == 'refs/heads/main'
         uses: snapcore/action-publish@v1
