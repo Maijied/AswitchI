@@ -1,0 +1,28 @@
+name: Publish Snap
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Snapcraft
+        run: sudo snap install snapcraft --classic
+
+      - name: Build Snap
+        run: sg lxd -c 'snapcraft'
+        
+      - name: Publish Snap
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+        run: |
+          if [ -z "$SNAPCRAFT_STORE_CREDENTIALS" ]; then
+            echo "Skipping snap publish because SNAPCRAFT_STORE_CREDENTIALS secret is not set."
+            exit 0
+          fi
+          snapcraft push *.snap --release=stable
