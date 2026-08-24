@@ -1,13 +1,15 @@
-# AswitchI — macOS AI Switcher # AswitchI — macOS AI Switcher & Launchpad for Ubuntu Launchpad for Ubuntu
-
-![CI/CD](https://github.com/Maijied/AswitchI/actions/workflows/main.yml/badge.svg)
+# AswitchI — macOS AI Switcher & Launchpad for Ubuntu Linux
 
 <div align="center">
   <img src="assets/icon.svg" width="120" height="120" alt="AswitchI Logo" />
   <br />
-  <strong>By Lorapok Labs</strong> (Founder: Maizied)
+  <strong>By Lorapok Labs</strong> (Founder & Architect: Maizied)
   <br /><br />
-  <a href="#features"><img src="https://img.shields.io/badge/Platform-Ubuntu%20Linux-E95420?style=for-the-badge&logo=ubuntu&logoColor=white" alt="Ubuntu" /></a>
+  <a href="https://snapcraft.io/aswitchi"><img src="https://snapcraft.io/static/images/badges/en/snap-store-black.svg" alt="Get it from the Snap Store" height="42" /></a>
+  <br /><br />
+  <a href="https://snapcraft.io/aswitchi"><img src="https://img.shields.io/badge/Snap_Store-aswitchi-82BEA0?style=for-the-badge&logo=snapcraft&logoColor=white" alt="Snapcraft" /></a>
+  <a href="https://aswitchi.lorapok.tech"><img src="https://img.shields.io/badge/Website-aswitchi.lorapok.tech-00F2FE?style=for-the-badge&logo=googlechrome&logoColor=black" alt="Website" /></a>
+  <a href="#features"><img src="https://img.shields.io/badge/Platform-Ubuntu%20%7C%20Debian%20%7C%20Arch-E95420?style=for-the-badge&logo=ubuntu&logoColor=white" alt="Ubuntu" /></a>
   <a href="#architecture"><img src="https://img.shields.io/badge/Architecture-GTK3%20%7C%20WebKit2-4F46E5?style=for-the-badge" alt="GTK3 WebKit2" /></a>
   <a href="#test-suite"><img src="https://img.shields.io/badge/Tests-26%2F26%20Passing%20(100%25)-10B981?style=for-the-badge" alt="Tests" /></a>
   <a href="#lorapok-labs"><img src="https://img.shields.io/badge/Developed%20By-Lorapok%20Labs-8B5CF6?style=for-the-badge" alt="Lorapok Labs" /></a>
@@ -15,9 +17,29 @@
 
 ---
 
+## 🏷️ Snap Tags & Keywords
+`snap` • `snapcraft` • `snap-store` • `ubuntu` • `linux-desktop` • `launchpad` • `ai-dock` • `ai-switcher` • `cursor-ide` • `windsurf` • `claude` • `chatgpt` • `gemini` • `aider` • `cline` • `webkit2gtk` • `lorapok-labs`
+
+---
+
 ## 🌟 Overview
 
-**AswitchI** is an autonomous native AI Launchpad for Ubuntu Linux developed by **Lorapok Labs**. It bridges Desktop AI IDEs (Cursor, Kiro IDE, Claude Desktop, Devin, Windsurf, Antigravity), CLI AI agents (`agy`, `claude`, `cursor-agent`, `kiro-cli`, `devin`, `aider`), persistent in-app Web AIs (Claude, ChatGPT, Gemini, Perplexity, DeepSeek, v0, Grok), and 53+ local workspace repositories into a unified, fluid macOS Launchpad interface.
+**AswitchI** is an autonomous native AI Launchpad for Linux developed by **Lorapok Labs**. It bridges Desktop AI IDEs (Cursor, Kiro IDE, Claude Desktop, Devin, Windsurf, Antigravity), CLI AI agents (`agy`, `claude`, `cursor-agent`, `kiro-cli`, `devin`, `aider`), persistent in-app Web AIs (Claude, ChatGPT, Gemini, Perplexity, DeepSeek, v0, Grok), and 53+ local workspace repositories into a unified, fluid macOS Launchpad interface.
+
+---
+
+## 📦 Snap Store Installation (Recommended)
+
+Install **AswitchI** on Ubuntu, Debian, Fedora, Arch Linux, or Manjaro with a single command:
+
+```bash
+sudo snap install aswitchi
+```
+
+To install with classic confinement (allowing full IDE and CLI tool discovery across host paths):
+```bash
+sudo snap install aswitchi --classic
+```
 
 ---
 
@@ -35,7 +57,7 @@
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick Start & CLI Flags
 
 Launch **AswitchI** from anywhere:
 ```bash
@@ -43,8 +65,10 @@ aswitchi
 ```
 Or use CLI arguments:
 ```bash
-aswitchi --list     # Print all detected tools and running statuses
-aswitchi --sync     # Perform an immediate system scan and refresh
+aswitchi --status    # Check GTK3 runtime and detected AI workspace statuses
+aswitchi --list      # Print all detected tools, CLI agents, and Web AIs
+aswitchi --sync      # Perform an immediate system scan and refresh
+aswitchi --launch claude   # Spawn an isolated sandboxed Web AI session
 ```
 
 ---
@@ -70,7 +94,7 @@ graph TD
 
 Run the comprehensive 26-test suite:
 ```bash
-python3 /mnt/NewVolume/Personal_Projects/AswitchI/tests/run_all_tests.py
+python3 tests/run_all_tests.py
 ```
 
 ---
@@ -79,5 +103,6 @@ python3 /mnt/NewVolume/Personal_Projects/AswitchI/tests/run_all_tests.py
 
 * **Organization**: Lorapok Labs
 * **Founder & Lead Architect**: Maizied
+* **Live Product Website**: [https://aswitchi.lorapok.tech](https://aswitchi.lorapok.tech)
+* **Canonical Snap Store**: [https://snapcraft.io/aswitchi](https://snapcraft.io/aswitchi)
 * **Mission**: Building next-generation AI orchestration tools, autonomous coding architectures, and native developer experiences.
-* **Documentation**: See [`docs/`](docs/) directory for detailed guides.

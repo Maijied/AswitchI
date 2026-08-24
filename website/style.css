@@ -1148,3 +1148,78 @@ p {
   font-size: 0.8rem;
   color: var(--text-muted);
 }
+
+/* ==========================================================
+   Snap Store UI Components & Tags
+   ========================================================== */
+
+.snap-tags-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.snap-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(130, 190, 160, 0.12);
+  border: 1px solid rgba(130, 190, 160, 0.35);
+  color: #82bea0;
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  padding: 4px 12px;
+  border-radius: 20px;
+  transition: all 0.2s ease;
+}
+
+.snap-badge-pill:hover {
+  background: rgba(130, 190, 160, 0.25);
+  transform: translateY(-1px);
+}
+
+.snap-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #82bea0;
+  box-shadow: 0 0 6px #82bea0;
+}
+
+.snap-tag {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  color: var(--text-muted);
+}
+
+.snap-tag strong {
+  color: var(--text-main);
+}
+
+.btn-snap-store {
+  display: inline-flex;
+  align-items: center;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.btn-snap-store:hover {
+  transform: translateY(-2px) scale(1.02);
+  filter: drop-shadow(0 6px 15px rgba(130, 190, 160, 0.4));
+}
+
+.snap-highlight {
+  border-color: rgba(130, 190, 160, 0.4) !important;
+  background: rgba(130, 190, 160, 0.03) !important;
+}
+
+.snap-highlight:hover {
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 25px rgba(130, 190, 160, 0.2) !important;
+}
