@@ -1,0 +1,76 @@
+name: Industry Main CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  release:
+    types: [published]
+
+jobs:
+  test-and-deploy-website:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-gi python3-gi-cairo gir1.2-gtk-3.0 gir1.2-webkit2-4.1 xvfb
+
+      - name: Install Desktop Shortcuts
+        run: bash scripts/install-desktop.sh
+
+      - name: Run Tests with Logging
+        run: |
+          mkdir -p logs
+          xvfb-run -a python3 tests/run_all_tests.py > logs/test-output.log 2>&1 || (cat logs/test-output.log && exit 1)
+          cat logs/test-output.log
+
+      - name: Upload Test Logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: main-test-logs
+          path: logs/test-output.log
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: aswitchi-website
+          directory: website
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+  build-and-publish-snap:
+    needs: test-and-deploy-website
+    strategy:
+      matrix:
+        # Building for amd64 and arm64. GitHub provides ubuntu-24.04-arm for open-source repos!
+        os: [ubuntu-latest, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.os }}
+    continue-on-error: true # ARM runner might not be enabled for this specific repo, so we allow failure
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Snap Package
+        uses: snapcore/action-build@v1
+        id: build
+
+      - name: Upload Snap Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aswitchi-snap-${{ matrix.os }}
+          path: ${{ steps.build.outputs.snap }}
+
+      - name: Publish Snap to Store
+        if: github.event_name == 'release' || github.ref == 'refs/heads/main'
+        uses: snapcore/action-publish@v1
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+        with:
+          store_login: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+          snap: ${{ steps.build.outputs.snap }}
+          release: stable
