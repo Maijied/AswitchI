@@ -1,170 +1,353 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AswitchI - The Linux AI Ecosystem Hub</title>
+    <title>AswitchI — The Linux Hub for AI Engineering & macOS Fluidity</title>
     
-    <!-- Industry Standard SEO Meta Tags -->
-    <meta name="description" content="AswitchI by Lorapok Labs: The ultimate dynamic dock and launcher for AI Desktop IDEs, Web AIs, and CLI Agents on Linux." />
-    <meta name="keywords" content="AI, Linux, Dock, App Launcher, Cursor, Claude, ChatGPT, Lorapok Labs, AswitchI" />
+    <!-- Core & Baseline SEO Metadata -->
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#050814">
+    <meta name="description" content="AswitchI by Lorapok Labs: A high-performance, native Linux Launchpad and Dock designed for AI IDEs, CLI Agents, and Web AIs with zero Electron overhead." />
+    <meta name="keywords" content="AswitchI, Lorapok Labs, Linux Dock, AI Switcher, macOS Launchpad Linux, Cursor IDE, Claude, ChatGPT, WebKitGTK" />
     <meta name="author" content="Mohammad Maizied Hasan Majumder" />
     <link rel="canonical" href="https://aswitchi.lorapok.tech/" />
-    
+    <link rel="icon" type="image/svg+xml" href="icons/aswitchi.svg">
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://aswitchi.lorapok.tech/" />
+    <meta property="og:title" content="AswitchI — The Linux Hub for AI Engineering" />
+    <meta property="og:description" content="Manage Desktop IDEs, CLI Agents, and Web AIs in a fluid, hardware-accelerated macOS-style launchpad on Ubuntu." />
+    <meta property="og:image" content="https://raw.githubusercontent.com/Maijied/AswitchI/main/assets/social_preview.jpg" />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="640" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://aswitchi.lorapok.tech/" />
+    <meta name="twitter:title" content="AswitchI — A Switch Between AI (Lorapok Labs)" />
+    <meta name="twitter:description" content="Native Linux dock and launchpad engineered for AI developers and power users." />
+    <meta name="twitter:image" content="https://raw.githubusercontent.com/Maijied/AswitchI/main/assets/social_preview.jpg" />
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "AswitchI",
+      "operatingSystem": "Linux",
+      "applicationCategory": "DeveloperApplication",
+      "author": {
+        "@type": "Organization",
+        "name": "Lorapok Labs",
+        "url": "https://lorapok.tech"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0.00",
+        "priceCurrency": "USD"
+      },
+      "description": "Hardware-accelerated Linux Launchpad & AI Workspace switcher built with Python, GTK3, and WebKit2."
+    }
+    </script>
+
+    <!-- Preconnect & Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="style.css">
+
+    <!-- Anti-FOUC Theme Script per Modern Web Guidance -->
+    <script>
+    (function() {
+      const savedTheme = localStorage.getItem("aswitchi-theme");
+      if (savedTheme) {
+        document.documentElement.setAttribute("data-theme", savedTheme);
+        const meta = document.querySelector('meta[name="color-scheme"]');
+        if (meta) meta.content = savedTheme;
+      }
+    })();
+    </script>
 </head>
 <body>
-    <div class="bg-mesh">
-        <div class="mesh-blob blob-1"></div>
-        <div class="mesh-blob blob-2"></div>
-        <div class="mesh-blob blob-3"></div>
+    <!-- Top Scroll Progress Indicator -->
+    <div id="scroll-progress" class="scroll-progress-bar"></div>
+
+    <!-- Interactive Cyber Particle Mesh -->
+    <canvas id="cyber-canvas" class="bg-canvas" aria-hidden="true"></canvas>
+
+    <!-- Ambient Mesh Glows -->
+    <div class="bg-ambient" aria-hidden="true">
+        <div class="glow-orb orb-purple"></div>
+        <div class="glow-orb orb-cyan"></div>
+        <div class="glow-orb orb-emerald"></div>
     </div>
 
-    <nav class="glass-nav">
-        <div class="nav-content">
-            <div class="brand">
-                <div class="logo-orb"></div>
-                <span class="logo-text">AswitchI</span>
-            </div>
-            <div class="links">
-                <a href="#features">Features</a>
-                <a href="#architecture">Architecture</a>
-                <a href="https://github.com/Maijied/AswitchI">GitHub</a>
-                <a href="https://snapcraft.io/aswitchi" class="btn-glow">Install Now</a>
-            </div>
-        </div>
-    </nav>
+    <!-- Navigation Header -->
+    <header class="navbar-wrapper">
+        <nav class="nav-container glass-morphism">
+            <a href="#home" class="brand-link">
+                <div class="brand-badge">
+                    <div class="brand-core"></div>
+                </div>
+                <span class="brand-title">AswitchI</span>
+                <span class="brand-tag">v1.0</span>
+            </a>
 
-    <main>
-        <section class="hero" id="home">
-            <div class="hero-content">
-                <div class="badge fade-up">Powered by Lorapok Labs</div>
-                <h1 class="fade-up delay-1">The Linux Hub for<br><span class="gradient-text">AI Engineering</span></h1>
-                <p class="subtitle fade-up delay-2">
-                    A switch between AI. Manage Desktop IDEs, CLI Agents, and Web AIs in a beautifully fluid, hardware-accelerated Launchpad experience.
+            <div class="nav-links">
+                <a href="#simulator" class="nav-item">Interactive Demo</a>
+                <a href="#features" class="nav-item">Features</a>
+                <a href="#architecture" class="nav-item">Architecture</a>
+                <a href="#install" class="nav-item">Install</a>
+                <a href="https://github.com/Maijied/AswitchI" target="_blank" rel="noopener" class="nav-item gh-link">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                    <span>GitHub</span>
+                </a>
+            </div>
+
+            <div class="nav-actions">
+                <button id="theme-toggle" class="icon-btn" aria-label="Toggle visual theme" title="Toggle Theme">
+                    <span class="theme-icon">⚡</span>
+                </button>
+                <a href="#install" class="btn-cyan-glow">
+                    <span>Get AswitchI</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main id="main-content">
+        <!-- Hero Section -->
+        <section id="home" class="hero-section">
+            <div class="hero-header">
+                <div class="pill-badge reveal-node">
+                    <span class="pulse-dot"></span>
+                    <span>An Innovation by Lorapok Labs</span>
+                </div>
+                
+                <h1 class="hero-headline balance-text reveal-node">
+                    A switch between <span class="gradient-cyan-purple">AI</span>.
+                </h1>
+
+                <p class="hero-subtext balance-text reveal-node">
+                    The unified, hardware-accelerated macOS Launchpad & Dock crafted for Linux. Effortlessly switch between Desktop AI IDEs, CLI Agents, and encrypted Web AI sessions.
                 </p>
-                <div class="hero-actions fade-up delay-3">
-                    <a href="https://snapcraft.io/aswitchi" class="btn-primary">
-                        <span>Get it from Snap Store</span>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+
+                <div class="hero-cta-group reveal-node">
+                    <a href="#install" class="btn-primary-glow">
+                        <span>Install on Linux</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                     </a>
-                    <a href="https://github.com/Maijied/AswitchI" class="btn-secondary">View Source</a>
+                    <a href="#simulator" class="btn-glass">
+                        <span>Live Interactive Simulator</span>
+                    </a>
                 </div>
             </div>
 
-            <div class="app-showcase fade-up delay-4">
-                <div class="mac-window">
-                    <div class="title-bar">
-                        <div class="dots"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
+            <!-- Showcase Window -->
+            <div class="hero-showcase reveal-node">
+                <div class="mac-window-frame glass-morphism">
+                    <div class="window-topbar">
+                        <div class="window-controls">
+                            <span class="control-dot close-dot"></span>
+                            <span class="control-dot min-dot"></span>
+                            <span class="control-dot max-dot"></span>
+                        </div>
+                        <div class="window-address-bar">
+                            <span class="secure-icon">🔒</span>
+                            <span class="address-text">aswitchi://launchpad.hub</span>
+                        </div>
+                        <div class="window-stats">WebKit2GTK • Hardware Accel</div>
                     </div>
-                    <div class="window-content">
-                        <!-- We use our github social preview as the hero image -->
-                        <img src="https://raw.githubusercontent.com/Maijied/AswitchI/main/assets/social_preview.jpg" alt="AswitchI Interface">
+                    <div class="window-viewport">
+                        <img src="assets/social_preview.jpg" alt="AswitchI Interface Preview" fetchpriority="high" decoding="async" class="hero-image">
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="features" id="features">
-            <div class="section-header fade-up">
-                <h2>Next-Gen Capabilities</h2>
-                <p>Designed for AI practitioners who demand speed and beauty.</p>
+        <!-- Interactive Live Simulator Section -->
+        <section id="simulator" class="simulator-section">
+            <div class="section-title-wrap reveal-node">
+                <span class="section-eyebrow">REAL-TIME SIMULATION</span>
+                <h2 class="section-heading balance-text">Test the Dock Experience Live</h2>
+                <p class="section-desc balance-text">Experience how AswitchI classifies, switches, and triggers your developer toolchain instantly.</p>
             </div>
-            <div class="feature-grid">
-                <div class="card glass-card fade-up">
-                    <div class="icon-box cyan">⚡</div>
-                    <h3>Native GTK Integration</h3>
-                    <p>Built with Python, GTK3, and WebKit2 for blazing fast hardware-accelerated rendering on Ubuntu. Zero Electron bloat.</p>
+
+            <div class="simulator-container glass-morphism reveal-node">
+                <div class="sim-tabs">
+                    <button class="sim-tab active" data-category="ides">
+                        <span class="tab-icon">💻</span>
+                        <span>Desktop AI IDEs</span>
+                        <span class="tab-badge">2 Active</span>
+                    </button>
+                    <button class="sim-tab" data-category="cli">
+                        <span class="tab-icon">⚡</span>
+                        <span>CLI AI Agents</span>
+                        <span class="tab-badge">2 Tools</span>
+                    </button>
+                    <button class="sim-tab" data-category="web">
+                        <span class="tab-icon">🌐</span>
+                        <span>Web AI Profiles</span>
+                        <span class="tab-badge">3 Sandboxed</span>
+                    </button>
                 </div>
-                <div class="card glass-card fade-up delay-1">
-                    <div class="icon-box purple">🌐</div>
-                    <h3>Encrypted Web AI Profiles</h3>
-                    <p>Persistent WebKit sessions for Claude, ChatGPT, and Gemini. Sandboxed, secure, and always logged in.</p>
+
+                <div class="sim-deck-content" id="sim-deck">
+                    <!-- Dynamic Interactive Cards injected via JS -->
                 </div>
-                <div class="card glass-card fade-up delay-2">
-                    <div class="icon-box amber">🔍</div>
-                    <h3>Deep Fuzzy Search</h3>
-                    <p>Instantly find and launch any AI workspace or CLI agent with a few keystrokes using our advanced indexing engine.</p>
+
+                <div class="sim-status-bar">
+                    <div class="sim-status-item">
+                        <span class="status-indicator online"></span>
+                        <span>WebKit2GTK Isolated Sandbox: <strong id="sim-status-text">Active Session</strong></span>
+                    </div>
+                    <div class="sim-status-action">
+                        <span class="keyboard-shortcut">Press <kbd>Ctrl</kbd> + <kbd>Space</kbd> to Trigger</span>
+                    </div>
                 </div>
             </div>
         </section>
-        
-        <section class="code-section fade-up" id="architecture">
-            <div class="section-header">
-                <h2>Command Line Mastery</h2>
-                <p>Control the entire ecosystem directly from the terminal.</p>
+
+        <!-- Core Features Grid -->
+        <section id="features" class="features-section">
+            <div class="section-title-wrap reveal-node">
+                <span class="section-eyebrow">ENGINEERING EXCELLENCE</span>
+                <h2 class="section-heading balance-text">Why Developers Switch to AswitchI</h2>
+                <p class="section-desc balance-text">Engineered without Electron bloat for instant response times and deep Linux desktop synergy.</p>
             </div>
-            <div class="terminal glass-card">
-                <div class="title-bar">
-                    <div class="dots"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
-                    <span class="term-title">bash - aswitchi</span>
+
+            <div class="features-grid">
+                <div class="feature-card glass-morphism reveal-node">
+                    <div class="feature-icon-wrapper icon-cyan">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    </div>
+                    <h3 class="feature-title">Native WebKit2GTK Engine</h3>
+                    <p class="feature-text">Built in Python 3 with direct GObject Introspection. Consumes less than 45MB RAM while offering full hardware-accelerated 60fps animations.</p>
                 </div>
-                <div class="term-body">
-                    <code><span class="prompt">$</span> aswitchi --install</code>
-                    <code class="output">Setting up desktop entries...<br>Symlinking executable to ~/.local/bin/aswitchi...<br>✔ Installation complete.</code>
-                    <code><span class="prompt">$</span> aswitchi --list</code>
-                    <code class="output">Detected AI Tools:<br>  Desktop AI IDEs: 2 (Cursor, Windsurf)<br>  CLI AI Agents: 1 (Aider)</code>
-                    <code class="blinking-cursor">_</code>
+
+                <div class="feature-card glass-morphism reveal-node">
+                    <div class="feature-icon-wrapper icon-purple">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </div>
+                    <h3 class="feature-title">Encrypted AI Web Sessions</h3>
+                    <p class="feature-text">Zero session loss. Persistent WebKit cookie vaults for Claude, ChatGPT, and Gemini keep you logged in without polluting your primary web browser.</p>
+                </div>
+
+                <div class="feature-card glass-morphism reveal-node">
+                    <div class="feature-icon-wrapper icon-emerald">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    </div>
+                    <h3 class="feature-title">Fuzzy Deep Indexing</h3>
+                    <p class="feature-text">Autodetects Cursor, Windsurf, VS Code, Cline, Aider, Ollama, and local models across standard paths and custom virtual environments.</p>
+                </div>
+
+                <div class="feature-card glass-morphism reveal-node">
+                    <div class="feature-icon-wrapper icon-amber">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    </div>
+                    <h3 class="feature-title">Multi-Monitor macOS Dock</h3>
+                    <p class="feature-text">Fluid auto-hiding dock with magnification physics, top-deck toast notifications, and customizable corner radii that seamlessly match Ubuntu themes.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture & Terminal Section -->
+        <section id="architecture" class="terminal-section">
+            <div class="section-title-wrap reveal-node">
+                <span class="section-eyebrow">COMMAND LINE INTEGRATION</span>
+                <h2 class="section-heading balance-text">Built for Terminal Power Users</h2>
+                <p class="section-desc balance-text">Seamless CLI flags, daemon modes, and instant environment scanning.</p>
+            </div>
+
+            <div class="terminal-window glass-morphism reveal-node">
+                <div class="terminal-header">
+                    <div class="window-controls">
+                        <span class="control-dot close-dot"></span>
+                        <span class="control-dot min-dot"></span>
+                        <span class="control-dot max-dot"></span>
+                    </div>
+                    <span class="terminal-title">bash — aswitchi-cli</span>
+                    <button class="copy-term-btn" id="copy-btn" title="Copy CLI Commands">
+                        <span id="copy-text">Copy</span>
+                    </button>
+                </div>
+                <div class="terminal-body" id="term-content">
+                    <div class="term-line"><span class="t-prompt">$</span> <span class="t-cmd">aswitchi --status</span></div>
+                    <div class="term-output">
+                        [✓] Lorapok Labs AswitchI v1.0 [STABLE]<br>
+                        [✓] GTK3 Window System: Wayland/X11 Ready<br>
+                        [✓] Detected IDEs: Cursor (/usr/bin/cursor), Windsurf<br>
+                        [✓] Detected CLI Agents: Aider, Cline<br>
+                        [✓] Web AI Sandboxes: 3 Persistent Profiles Active
+                    </div>
+                    <div class="term-line"><span class="t-prompt">$</span> <span class="t-cmd">aswitchi --launch claude</span></div>
+                    <div class="term-output t-success">
+                        🚀 Spawning isolated Claude session with hardware WebKit acceleration...
+                    </div>
+                    <div class="term-line"><span class="t-prompt">$</span> <span class="cursor-blink">█</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Installation Section -->
+        <section id="install" class="install-section">
+            <div class="install-card glass-morphism reveal-node">
+                <div class="install-header">
+                    <h2 class="install-title balance-text">Ready to supercharge your Linux AI workflow?</h2>
+                    <p class="install-subtitle balance-text">Install via Snap Store or build natively from GitHub in seconds.</p>
+                </div>
+
+                <div class="install-options-grid">
+                    <div class="install-box">
+                        <div class="box-tag">RECOMMENDED</div>
+                        <h3>Snap Store (Ubuntu / Debian / Arch)</h3>
+                        <div class="code-pill">
+                            <code>sudo snap install aswitchi</code>
+                        </div>
+                        <p class="box-caption">Universal auto-updating package for amd64 and arm64.</p>
+                    </div>
+
+                    <div class="install-box">
+                        <div class="box-tag">DEVELOPER</div>
+                        <h3>Native Git Clone</h3>
+                        <div class="code-pill">
+                            <code>git clone https://github.com/Maijied/AswitchI.git && cd AswitchI && ./scripts/install-desktop.sh</code>
+                        </div>
+                        <p class="box-caption">Installs local desktop shortcuts, icons, and symlinks.</p>
+                    </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer>
-        <div class="footer-content glass-card">
-            <div class="brand">
-                <span class="logo-text">AswitchI</span>
-                <p>A Lorapok Labs Innovation.</p>
+    <!-- Footer -->
+    <footer class="footer-wrapper">
+        <div class="footer-container glass-morphism">
+            <div class="footer-brand">
+                <div class="brand-link">
+                    <div class="brand-badge mini"><div class="brand-core"></div></div>
+                    <span class="brand-title">AswitchI</span>
+                </div>
+                <p class="footer-desc">An engineering project by <strong>Lorapok Labs</strong>. Crafted for high-speed AI developer workflows.</p>
             </div>
-            <p>&copy; 2026 Mohammad Maizied Hasan Majumder. All rights reserved.</p>
+            
+            <div class="footer-meta">
+                <div class="footer-links">
+                    <a href="https://github.com/Maijied/AswitchI" target="_blank" rel="noopener">GitHub Repository</a>
+                    <a href="https://github.com/Maijied/AswitchI/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0 License</a>
+                    <a href="https://github.com/Maijied/AswitchI/issues" target="_blank" rel="noopener">Report Issue</a>
+                </div>
+                <p class="footer-copy">© 2026 Mohammad Maizied Hasan Majumder. All rights reserved.</p>
+            </div>
         </div>
     </footer>
 
-    <!-- GSAP for Animations -->
+    <!-- GSAP CDN for Fallback High-Performance Animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script>
-        gsap.registerPlugin(ScrollTrigger);
-        
-        // Initial load animations
-        gsap.utils.toArray('.fade-up').forEach((elem) => {
-            let delay = 0;
-            if(elem.classList.contains('delay-1')) delay = 0.1;
-            if(elem.classList.contains('delay-2')) delay = 0.2;
-            if(elem.classList.contains('delay-3')) delay = 0.3;
-            if(elem.classList.contains('delay-4')) delay = 0.5;
-
-            gsap.fromTo(elem, 
-                { y: 50, opacity: 0 },
-                {
-                    scrollTrigger: {
-                        trigger: elem,
-                        start: "top 85%",
-                    },
-                    y: 0,
-                    opacity: 1,
-                    duration: 0.8,
-                    delay: delay,
-                    ease: "power3.out"
-                }
-            );
-        });
-
-        // Floating blobs parallax
-        gsap.to('.blob-1', {
-            y: "30vh",
-            x: "10vw",
-            scrollTrigger: { scrub: 1 }
-        });
-        gsap.to('.blob-2', {
-            y: "-30vh",
-            x: "-10vw",
-            scrollTrigger: { scrub: 1 }
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
