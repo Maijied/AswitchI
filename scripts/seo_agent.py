@@ -42,6 +42,8 @@ def optimize_html():
         return
 
     seo_tags = """
+    <!-- Google Search Console Verification -->
+    <meta name="google-site-verification" content="K5UPSSKq8a6bvP6hoEbP4-fGwUhDD5yZ7bnlKGtzH3Q" />
     <!-- Industry Standard SEO Agent Injection -->
     <meta name="description" content="AswitchI by Lorapok Labs: The ultimate dynamic dock and launcher for AI Desktop IDEs, Web AIs, and CLI Agents on Linux." />
     <meta name="keywords" content="AI, Linux, Dock, App Launcher, Cursor, Claude, ChatGPT, Lorapok Labs, AswitchI" />
