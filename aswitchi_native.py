@@ -15,7 +15,7 @@ sys.path.insert(0, str(PROJECT_DIR))
 import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('WebKit2', '4.1')
-from gi.repository import Gtk, WebKit2, GLib, Gdk
+from gi.repository import Gtk, WebKit2, GLib, Gdk, Gio
 
 from src.backend import scanner, executor, config
 
@@ -31,9 +31,9 @@ def execute_js(webview, js):
         except Exception:
             pass
 
-class AswitchINativeApp(Gtk.Window):
-    def __init__(self):
-        super().__init__(type=Gtk.WindowType.TOPLEVEL)
+class AswitchINativeApp(Gtk.ApplicationWindow):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.set_title("AswitchI")
         self.set_default_size(1220, 800)
         self.set_position(Gtk.WindowPosition.CENTER)
@@ -298,6 +298,17 @@ class AswitchINativeApp(Gtk.Window):
         except Exception as e:
             print("Error handling JS message:", e)
 
+class AswitchIApplication(Gtk.Application):
+    def __init__(self):
+        super().__init__(application_id="com.lorapok.aswitchi", flags=Gio.ApplicationFlags.FLAGS_NONE)
+        self.window = None
+
+    def do_activate(self):
+        if not self.window:
+            self.window = AswitchINativeApp(application=self)
+            self.window.show_all()
+        self.window.present()
+
 def main():
     if len(sys.argv) > 1:
         flag = sys.argv[1]
@@ -323,9 +334,8 @@ def main():
             print(f"Sync complete: Detected {data['summary']['totalInstalledAIs']} AI tools and {data['summary']['projectCount']} projects.")
             sys.exit(0)
 
-    app = AswitchINativeApp()
-    app.show_all()
-    Gtk.main()
+    app = AswitchIApplication()
+    app.run(sys.argv)
 
 if __name__ == "__main__":
     main()
