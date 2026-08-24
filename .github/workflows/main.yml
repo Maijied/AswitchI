@@ -20,7 +20,9 @@ jobs:
       - name: Install Desktop Shortcuts
         run: bash scripts/install-desktop.sh
       - name: Run tests
-        run: python3 tests/run_all_tests.py
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          python3 tests/run_all_tests.py
 
   deploy-website:
     needs: test
