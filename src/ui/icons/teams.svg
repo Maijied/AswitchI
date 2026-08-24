@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" rx="22" fill="#4B53BC"/>
+  <!-- User 1 -->
+  <circle cx="68" cy="38" r="10" fill="#7B83EB"/>
+  <path d="M56 68 C56 56 62 52 74 52 C82 52 88 56 88 68 Z" fill="#7B83EB"/>
+  <!-- Main T Shield -->
+  <rect x="18" y="32" width="44" height="44" rx="8" fill="#5059C9" stroke="#7B83EB" stroke-width="2"/>
+  <path d="M30 44 H50 M40 44 V64" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
+</svg>

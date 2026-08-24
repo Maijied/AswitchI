@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AswitchI — AI Switcher & Command Hub</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/svg+xml" href="/assets/icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased select-none font-sans overflow-hidden">
+  
+  <!-- Main Window Container (Mac Spotlight / Raycast Style Floating Shell) -->
+  <div class="window-shell flex flex-col h-screen max-h-screen">
+    
+    <!-- Titlebar / Header -->
+    <header class="titlebar flex items-center justify-between px-5 py-3 border-b border-white/10 bg-slate-900/60 backdrop-blur-xl">
+      <div class="flex items-center space-x-3">
+        <!-- Mac Traffic Lights -->
+        <div class="flex space-x-2">
+          <span class="w-3 h-3 rounded-full bg-rose-500/80 hover:bg-rose-500 cursor-pointer shadow-sm shadow-rose-500/20" title="Close" onclick="window.close()"></span>
+          <span class="w-3 h-3 rounded-full bg-amber-500/80 hover:bg-amber-500 cursor-pointer shadow-sm shadow-amber-500/20" title="Minimize"></span>
+          <span class="w-3 h-3 rounded-full bg-emerald-500/80 hover:bg-emerald-500 cursor-pointer shadow-sm shadow-emerald-500/20" title="Maximize"></span>
+        </div>
+        <div class="flex items-center space-x-2 pl-3">
+          <div class="w-6 h-6 rounded-lg bg-gradient-to-tr from-indigo-600 to-violet-400 flex items-center justify-center shadow-md shadow-indigo-500/20">
+            <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </div>
+          <span class="font-bold text-sm tracking-wide bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">AswitchI</span>
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-mono border border-indigo-500/30">v1.0 • Ubuntu</span>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex items-center space-x-2">
+        <button id="btn-sync" class="btn-secondary text-xs flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-all active:scale-95" title="Rescan installed AIs & projects">
+          <svg class="w-3.5 h-3.5 text-indigo-400 sync-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+          <span>Sync & Detect</span>
+        </button>
+
+        <button id="btn-add-web" class="btn-primary text-xs flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium shadow-md shadow-indigo-600/30 transition-all active:scale-95">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          <span>Add Web AI</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Spotlight Search Input -->
+    <div class="search-section px-5 pt-4 pb-3 bg-slate-900/40 border-b border-white/5">
+      <div class="relative flex items-center">
+        <div class="absolute left-4 pointer-events-none text-slate-400">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+        </div>
+        <input 
+          type="text" 
+          id="search-input" 
+          placeholder="Type to search AIs, launch commands, or filter by tags (Cursor, Kiro, Claude, agy)..."
+          class="w-full pl-12 pr-28 py-3 bg-white/5 hover:bg-white/[0.07] focus:bg-slate-900/90 text-sm md:text-base text-white placeholder-slate-400 rounded-xl border border-white/10 focus:border-indigo-500/80 focus:ring-4 focus:ring-indigo-500/20 outline-none transition-all"
+          autofocus
+        />
+        <div class="absolute right-3 flex items-center space-x-1 text-slate-400 text-xs font-mono">
+          <kbd class="px-1.5 py-0.5 rounded bg-white/10 border border-white/10 text-[10px]">1-9</kbd>
+          <span>Run</span>
+          <kbd class="ml-1 px-1.5 py-0.5 rounded bg-white/10 border border-white/10 text-[10px]">↵</kbd>
+        </div>
+      </div>
+
+      <!-- Categories Navigation -->
+      <div class="flex items-center justify-between mt-3 text-xs">
+        <div class="flex space-x-1 p-1 bg-black/30 rounded-xl border border-white/5" id="category-tabs">
+          <button data-cat="all" class="cat-tab active px-3 py-1 rounded-lg font-medium transition-all">🌟 All AIs (<span id="count-all">0</span>)</button>
+          <button data-cat="ide" class="cat-tab px-3 py-1 rounded-lg font-medium text-slate-400 hover:text-white transition-all">💻 Desktop IDEs (<span id="count-ide">0</span>)</button>
+          <button data-cat="cli" class="cat-tab px-3 py-1 rounded-lg font-medium text-slate-400 hover:text-white transition-all">⚡ CLI Agents (<span id="count-cli">0</span>)</button>
+          <button data-cat="web" class="cat-tab px-3 py-1 rounded-lg font-medium text-slate-400 hover:text-white transition-all">🌐 Web AIs (<span id="count-web">0</span>)</button>
+          <button data-cat="projects" class="cat-tab px-3 py-1 rounded-lg font-medium text-slate-400 hover:text-white transition-all">📁 Workspaces (<span id="count-projects">0</span>)</button>
+        </div>
+
+        <div class="text-[11px] text-slate-400 flex items-center space-x-2">
+          <span class="flex items-center space-x-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span id="running-count">0 Running</span>
+          </span>
+          <span>•</span>
+          <span id="last-scanned">Synced</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Area / Grid of AIs -->
+    <main class="flex-1 overflow-y-auto p-5 custom-scroll bg-gradient-to-b from-slate-950 to-slate-900/80">
+      
+      <!-- AI Cards Grid -->
+      <div id="ai-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+        <!-- Dynamically injected cards -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="hidden flex flex-col items-center justify-center h-64 text-center">
+        <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 mb-3">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <p class="text-sm font-medium text-slate-300">No matching AI tools found</p>
+        <p class="text-xs text-slate-500 mt-1">Try another search term or click "Sync & Detect" to rescan.</p>
+      </div>
+
+    </main>
+
+    <!-- Bottom Status Bar -->
+    <footer class="px-5 py-2.5 border-t border-white/10 bg-slate-950/80 text-[11px] text-slate-400 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <span class="flex items-center space-x-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+          <span>AswitchI Command Center</span>
+        </span>
+        <span>•</span>
+        <span>Press <kbd class="px-1 py-0.5 rounded bg-white/10 border border-white/10 text-[9px] font-mono text-slate-300">Tab</kbd> to switch tabs</span>
+        <span>•</span>
+        <span>Press <kbd class="px-1 py-0.5 rounded bg-white/10 border border-white/10 text-[9px] font-mono text-slate-300">Esc</kbd> to clear search</span>
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <span id="toast-msg" class="text-indigo-300 font-medium opacity-0 transition-opacity duration-300"></span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Modal: Add Web AI -->
+  <div id="modal-web-ai" class="modal-backdrop hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="modal-panel bg-slate-900 border border-white/15 rounded-2xl w-full max-w-md p-5 shadow-2xl shadow-black/80">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10">
+        <div class="flex items-center space-x-2">
+          <div class="w-7 h-7 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+            </svg>
+          </div>
+          <h3 class="font-bold text-sm text-white">Add New Web AI</h3>
+        </div>
+        <button id="modal-close" class="text-slate-400 hover:text-white text-lg font-bold">&times;</button>
+      </div>
+
+      <form id="form-add-web-ai" class="mt-4 space-y-3.5">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">AI Name</label>
+          <input type="text" id="input-web-name" required placeholder="e.g. Midjourney Web, Perplexity Labs" class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Web URL</label>
+          <input type="url" id="input-web-url" required placeholder="https://..." class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Description (Optional)</label>
+          <input type="text" id="input-web-desc" placeholder="Brief note or model version" class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none">
+        </div>
+
+        <div class="flex items-center space-x-2 pt-1">
+          <input type="checkbox" id="input-web-appmode" checked class="rounded bg-white/10 border-white/20 text-indigo-600 focus:ring-indigo-500">
+          <label for="input-web-appmode" class="text-xs text-slate-300">Launch in Dedicated Standalone App Window (Mac-style)</label>
+        </div>
+
+        <div class="flex justify-end space-x-2 pt-3 border-t border-white/10">
+          <button type="button" id="btn-cancel-modal" class="px-3 py-1.5 rounded-lg border border-white/10 text-xs text-slate-300 hover:bg-white/5">Cancel</button>
+          <button type="submit" class="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-xs font-medium text-white shadow-md shadow-indigo-600/30">Save Web AI</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Project Workspace Picker -->
+  <div id="modal-project-picker" class="modal-backdrop hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="modal-panel bg-slate-900 border border-white/15 rounded-2xl w-full max-w-lg p-5 shadow-2xl shadow-black/80 flex flex-col max-h-[80vh]">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10">
+        <div>
+          <h3 class="font-bold text-sm text-white" id="picker-title">Open Project in AI</h3>
+          <p class="text-xs text-slate-400" id="picker-subtitle">Select a workspace project directory</p>
+        </div>
+        <button id="picker-close" class="text-slate-400 hover:text-white text-lg font-bold">&times;</button>
+      </div>
+
+      <div class="my-3">
+        <input type="text" id="picker-search" placeholder="Search project folders..." class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-xs text-white focus:border-indigo-500 outline-none">
+      </div>
+
+      <div id="picker-list" class="flex-1 overflow-y-auto custom-scroll space-y-1 pr-1">
+        <!-- Injected projects -->
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

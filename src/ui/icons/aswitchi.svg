@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#312E81"/>
+      <stop offset="50%" stop-color="#1E1B4B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818CF8"/>
+      <stop offset="100%" stop-color="#C084FC"/>
+    </linearGradient>
+    <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#4F46E5" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Squircle Base -->
+  <rect x="32" y="32" width="448" height="448" rx="108" fill="url(#bgGrad)" stroke="rgba(255,255,255,0.15)" stroke-width="6"/>
+
+  <!-- Glowing Neural Switch Hub -->
+  <g filter="url(#dropShadow)">
+    <!-- Circuit rings -->
+    <circle cx="256" cy="256" r="140" fill="none" stroke="url(#glowGrad)" stroke-width="6" stroke-dasharray="16 12" opacity="0.6"/>
+    <circle cx="256" cy="256" r="100" fill="rgba(99,102,241,0.12)" stroke="#818CF8" stroke-width="4"/>
+
+    <!-- Central Switcher Lightning / AI core -->
+    <path d="M276 140 L180 280 L250 280 L236 372 L332 232 L262 232 Z" fill="url(#glowGrad)"/>
+
+    <!-- Satellite AI nodes -->
+    <circle cx="160" cy="160" r="14" fill="#38BDF8"/>
+    <circle cx="352" cy="160" r="14" fill="#F472B6"/>
+    <circle cx="352" cy="352" r="14" fill="#34D399"/>
+    <circle cx="160" cy="352" r="14" fill="#FBBF24"/>
+  </g>
+</svg>

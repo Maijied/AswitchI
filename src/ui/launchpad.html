@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AswitchI — macOS Launchpad</title>
+  <link rel="stylesheet" href="launchpad_v2.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- macOS Opening Splash Loading Animation with Official AswitchI Logo -->
+  <div id="launchpad-splash" class="launchpad-splash">
+    <div class="splash-content">
+      <div class="splash-logo-box">
+        <img src="icons/aswitchi.svg" alt="AswitchI Logo" class="splash-logo" />
+        <div class="splash-spinner-ring"></div>
+      </div>
+      <h1 class="splash-title">AswitchI</h1>
+      <p class="splash-subtitle">Scanning system AI tools & workspaces...</p>
+    </div>
+  </div>
+
+  <!-- Fullscreen macOS Launchpad Backdrop -->
+  <div class="launchpad-container" id="launchpad">
+
+    <!-- Top Status / Search Header -->
+    <header class="launchpad-header">
+      
+      <!-- Category Filter Pills (Apple Segmented Style) -->
+      <div class="category-pills" id="category-pills">
+        <button class="cat-pill active" data-cat="all">All (<span id="count-all">0</span>)</button>
+        <button class="cat-pill" data-cat="desktop">💻 Desktop (<span id="count-desktop">0</span>)</button>
+        <button class="cat-pill" data-cat="cli">⚡ CLI (<span id="count-cli">0</span>)</button>
+        <button class="cat-pill" data-cat="web">🌐 Web AI (<span id="count-web">0</span>)</button>
+        <button class="cat-pill" data-cat="projects">📁 Projects (<span id="count-projects">0</span>)</button>
+      </div>
+
+      <!-- Search Bar (Centered) -->
+      <div class="search-box-wrapper">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <circle cx="11" cy="11" r="7" stroke-width="2"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input type="text" id="search-input" placeholder="Search AIs or Workspaces..." autocomplete="off" spellcheck="false" autofocus />
+      </div>
+
+      <!-- Action Buttons Top Right -->
+      <div class="header-actions">
+        <button id="btn-sync" class="glass-btn" title="Sync & Rescan Installed AIs">
+          <svg class="w-4 h-4 sync-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+          <span>Sync</span>
+        </button>
+
+        <button id="btn-add-web" class="glass-btn" title="Add New Web AI">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <line x1="12" y1="5" x2="12" y2="19" stroke-width="2" stroke-linecap="round"/>
+            <line x1="5" y1="12" x2="19" y2="12" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span>Add Web AI</span>
+        </button>
+
+        <!-- Window Controls: Minimize and Close -->
+        <div class="window-controls">
+          <button id="btn-minimize" class="ctrl-btn btn-min" title="Minimize Window">–</button>
+          <button id="btn-close" class="ctrl-btn btn-close" title="Close AswitchI (Esc)">&times;</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Multi-Page Carousel Viewport (2-Finger Horizontal Scroll Supported) -->
+    <main class="pages-viewport" id="pages-viewport">
+      <div class="pages-slider" id="pages-slider">
+        <!-- Dynamically injected isolated pages -->
+      </div>
+    </main>
+
+    <!-- Pagination Navigation Dots (• •) -->
+    <div class="pagination-dots" id="pagination-dots">
+      <!-- Injected pagination dots -->
+    </div>
+
+    <!-- macOS 3D Glass Reflective Dock -->
+    <div class="dock-container">
+      <div class="dock-shelf" id="dock-shelf">
+        <!-- Pinned Dock Apps with Reflections & Live Running Dots -->
+      </div>
+    </div>
+
+    <!-- Floating Help Button Bottom Right -->
+    <button id="btn-help" class="floating-help-btn" title="AswitchI Guide & Lorapok Labs Info">?</button>
+
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">AswitchI Ready</div>
+
+  <!-- Custom Right-Click Context Menu -->
+  <div id="context-menu" class="mac-context-menu hidden">
+    <div class="menu-item" id="ctx-launch">
+      <span class="menu-icon">🚀</span>
+      <span>Open App</span>
+    </div>
+    <div class="menu-item" id="ctx-project">
+      <span class="menu-icon">📂</span>
+      <span>Open Project in AI...</span>
+    </div>
+    <div class="menu-divider"></div>
+    <div class="menu-item" id="ctx-dock">
+      <span class="menu-icon" id="ctx-dock-icon">📌</span>
+      <span id="ctx-dock-text">Pin to Dock</span>
+    </div>
+    <div class="menu-divider" id="ctx-stop-divider"></div>
+    <div class="menu-item text-red" id="ctx-stop">
+      <span class="menu-icon">⏹</span>
+      <span>Stop Process</span>
+    </div>
+  </div>
+
+  <!-- Modal: Help, Guide & Lorapok Labs Developer Info -->
+  <div id="modal-help" class="modal-overlay hidden">
+    <div class="mac-modal help-modal">
+      <div class="modal-header">
+        <div class="traffic-lights">
+          <span class="light red" id="help-close-red"></span>
+          <span class="light yellow"></span>
+          <span class="light green"></span>
+        </div>
+        <h3 class="modal-title">AswitchI — Guide & Lorapok Labs</h3>
+      </div>
+      <!-- Segmented Navigation for Modal -->
+      <div class="modal-tabs">
+        <button class="modal-tab active" id="tab-guide">📖 User Guide</button>
+        <button class="modal-tab" id="tab-about">🏢 Lorapok Labs</button>
+      </div>
+
+      <!-- Tab 1: User Guide -->
+      <div class="help-modal-body" id="modal-body-guide">
+        <div class="help-section">
+          <h4>🚀 Launching Applications</h4>
+          <p>• <strong>Left Click</strong> any AI IDE, CLI Agent, or Web AI to launch it immediately with authentic macOS bounce physics.</p>
+          <p>• <strong>Web AIs</strong> run directly inside AswitchI with encrypted session persistence (no repeated logins!).</p>
+          <p>• <strong>CLI Agents</strong> start in their dedicated terminal session directly in your project workspace.</p>
+        </div>
+
+        <div class="help-section">
+          <h4>📂 Workspace Projects</h4>
+          <p>• <strong>Right Click</strong> any Desktop IDE (Cursor, Kiro, Claude, etc.) to select a workspace project from <code>~/Shohoz</code>, <code>~/Desktop</code>, or <code>/mnt/NewVolume/Personal_Projects</code>.</p>
+        </div>
+
+        <div class="help-section">
+          <h4>📌 macOS 3D Glass Dock</h4>
+          <p>• <strong>Right Click</strong> any app in the grid to <strong>Pin to Dock</strong> or <strong>Remove from Dock</strong>.</p>
+          <p>• Pinned apps display real-time live running dots and type badges.</p>
+        </div>
+
+        <div class="help-section">
+          <h4>⌨️ Gestures & Keyboard Shortcuts</h4>
+          <div class="shortcuts-grid">
+            <div><code>2-Finger Swipe</code> : Switch Launchpad pages</div>
+            <div><code>←</code> / <code>→</code> : Previous / Next page</div>
+            <div><code>Esc</code> : Close modal / Back to Launchpad</div>
+            <div><code>Enter</code> : Open first search result</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: About Lorapok Labs & Developer Info -->
+      <div class="help-modal-body hidden" id="modal-body-about">
+        <div class="about-hero">
+          <img src="icons/aswitchi.svg" alt="AswitchI" class="about-hero-logo" />
+          <div class="about-hero-text">
+            <h3>AswitchI <span class="badge-version" id="about-version">v1.0.0</span></h3>
+            <p class="about-sub">A switch between AI</p>
+          </div>
+        </div>
+
+        <div class="about-card">
+          <div class="about-row">
+            <span class="about-label">🏢 Organization:</span>
+            <span class="about-val"><strong>Lorapok Labs</strong> (Dhaka, Bangladesh)</span>
+          </div>
+          <div class="about-row">
+            <span class="about-label">👤 Founder:</span>
+            <span class="about-val"><strong>Mohammad Maizied Hasan Majumder</strong></span>
+          </div>
+          <div class="about-row">
+            <span class="about-label">🌐 Ecosystem:</span>
+            <span class="about-val">Lorapok Atlas, Media Player, ReportKit UI, Laravel Monitor, Linpad</span>
+          </div>
+        </div>
+
+        <div class="about-description">
+          <p>Developed by <strong>Lorapok Labs</strong> to provide developers on Linux with a fluid, high-performance macOS Launchpad experience for navigating AI IDEs, CLI autonomous agents, and persistent Web AIs.</p>
+          <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center;">
+            <button class="glass-btn" onclick="window.open('https://aswitchi.lorapok.tech')">Official Website</button>
+          </div>
+        </div>
+        </div>
+
+        <div class="about-card">
+          <div class="about-row">
+            <span class="about-label">🏢 Organization:</span>
+            <span class="about-val"><strong>Lorapok Labs</strong></span>
+          </div>
+          <div class="about-row">
+            <span class="about-label">👤 Founder:</span>
+            <span class="about-val"><strong>Maizied</strong> (Founder & Lead Architect)</span>
+          </div>
+          <div class="about-row">
+            <span class="about-label">🌐 Ecosystem:</span>
+            <span class="about-val">Autonomous Coding Agents, Kiro, AGY, Neural Launchpads</span>
+          </div>
+          <div class="about-row">
+            <span class="about-label">💻 Platform:</span>
+            <span class="about-val">Ubuntu Linux (Native GTK3 / WebKit2 / Hardware Accel)</span>
+          </div>
+        </div>
+
+        <div class="about-description">
+          <p>Developed by <strong>Lorapok Labs</strong> to provide developers on Ubuntu Linux with a fluid, high-performance macOS Launchpad experience for navigating AI IDEs, CLI autonomous agents, and persistent Web AIs.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modal: Add New Web AI -->
+  <div id="modal-web-ai" class="modal-overlay hidden">
+    <div class="mac-modal">
+      <div class="modal-header">
+        <div class="traffic-lights">
+          <span class="light red" id="modal-close-red"></span>
+          <span class="light yellow"></span>
+          <span class="light green"></span>
+        </div>
+        <h3 class="modal-title">Add New Web AI</h3>
+      </div>
+      <form id="form-web-ai" class="modal-body">
+        <div class="form-group">
+          <label>AI Application Name</label>
+          <input type="text" id="web-name" required placeholder="e.g. Midjourney, Cursor Studio" />
+        </div>
+        <div class="form-group">
+          <label>Web Application URL</label>
+          <input type="url" id="web-url" required placeholder="https://..." />
+        </div>
+        <div class="form-group">
+          <label>Description / Notes</label>
+          <input type="text" id="web-desc" placeholder="Model or purpose" />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-mac-secondary" id="modal-cancel">Cancel</button>
+          <button type="submit" class="btn-mac-primary">Add to Launchpad</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Workspace Project Picker -->
+  <div id="modal-project" class="modal-overlay hidden">
+    <div class="mac-modal project-modal">
+      <div class="modal-header">
+        <div class="traffic-lights">
+          <span class="light red" id="proj-close-red"></span>
+          <span class="light yellow"></span>
+          <span class="light green"></span>
+        </div>
+        <h3 class="modal-title" id="proj-modal-title">Open Project in AI</h3>
+      </div>
+      <div class="project-modal-body">
+        <input type="text" id="proj-search" placeholder="Filter projects (Shohoz, Personal Projects, Desktop)..." />
+        <div class="projects-list" id="projects-list">
+          <!-- Injected projects -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="launchpad_v2.js"></script>
+</body>
+</html>

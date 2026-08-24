@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# AswitchI - Native Ubuntu Launchpad & AI Switcher
+set -e
+
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do
+  DIR="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+PROJECT_DIR="$(cd -P "$(dirname "$SOURCE")/.." >/dev/null 2>&1 && pwd)"
+
+# Always ensure latest desktop integration & app menu registration
+bash "${PROJECT_DIR}/scripts/install-desktop.sh" >/dev/null 2>&1 || true
+
+exec python3 "$PROJECT_DIR/aswitchi_native.py" "$@"

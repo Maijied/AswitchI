@@ -1,0 +1,29 @@
+{
+  "name": "aswitchi",
+  "version": "1.0.0",
+  "description": "AswitchI - Mac-style AI Switcher & Unified Command Hub for Ubuntu",
+  "main": "src/main/main.js",
+  "bin": {
+    "aswitchi": "bin/aswitchi"
+  },
+  "scripts": {
+    "start": "electron .",
+    "server": "node src/server.js",
+    "launch": "node bin/aswitchi-launcher.js",
+    "install-desktop": "bash scripts/install-desktop.sh"
+  },
+  "keywords": [
+    "ai",
+    "switcher",
+    "mac-style",
+    "launcher",
+    "cursor",
+    "kiro",
+    "claude",
+    "devin",
+    "chatgpt",
+    "windsurf"
+  ],
+  "author": "Maizied Hasan",
+  "license": "MIT"
+}
