@@ -40,7 +40,7 @@ apps:
       PYTHONPATH: $SNAP/opt/aswitchi
       GI_TYPELIB_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET/girepository-1.0:$SNAP/usr/lib/girepository-1.0
 title: AswitchI
-icon: assets/snap_icon.jpg
+icon: assets/snap_icon.png
 license: GPL-3.0-or-later
 contact: maizied@lorapok.tech
 issues: https://github.com/Maijied/AswitchI/issues
