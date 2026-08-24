@@ -3,52 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AswitchI - A switch between AI</title>
+    <title>AswitchI - The Linux AI Ecosystem Hub</title>
+    
+    <!-- Industry Standard SEO Meta Tags -->
+    <meta name="description" content="AswitchI by Lorapok Labs: The ultimate dynamic dock and launcher for AI Desktop IDEs, Web AIs, and CLI Agents on Linux." />
+    <meta name="keywords" content="AI, Linux, Dock, App Launcher, Cursor, Claude, ChatGPT, Lorapok Labs, AswitchI" />
+    <meta name="author" content="Mohammad Maizied Hasan Majumder" />
+    <link rel="canonical" href="https://aswitchi.lorapok.tech/" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="bg-mesh">
+        <div class="mesh-blob blob-1"></div>
+        <div class="mesh-blob blob-2"></div>
+        <div class="mesh-blob blob-3"></div>
+    </div>
+
     <nav class="glass-nav">
-        <div class="logo">AswitchI</div>
-        <div class="links">
-            <a href="#features">Features</a>
-            <a href="https://github.com/Maijied/AswitchI">GitHub</a>
-            <a href="#" class="btn-primary">Download</a>
+        <div class="nav-content">
+            <div class="brand">
+                <div class="logo-orb"></div>
+                <span class="logo-text">AswitchI</span>
+            </div>
+            <div class="links">
+                <a href="#features">Features</a>
+                <a href="#architecture">Architecture</a>
+                <a href="https://github.com/Maijied/AswitchI">GitHub</a>
+                <a href="https://snapcraft.io/aswitchi" class="btn-glow">Install Now</a>
+            </div>
         </div>
     </nav>
 
-    <header class="hero">
-        <h1 class="animated-text">A switch between AI.</h1>
-        <p class="subtitle">The fluid, high-performance macOS Launchpad experience for Linux. Manage IDEs, CLI Agents, and Web AIs seamlessly.</p>
-        <div class="hero-actions">
-            <a href="https://github.com/Maijied/AswitchI/releases/latest" class="btn-primary large">Download for Linux</a>
-        </div>
-        
-        <div class="app-preview glass-panel">
-            <div class="traffic-lights">
-                <span></span><span></span><span></span>
+    <main>
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <div class="badge fade-up">Powered by Lorapok Labs</div>
+                <h1 class="fade-up delay-1">The Linux Hub for<br><span class="gradient-text">AI Engineering</span></h1>
+                <p class="subtitle fade-up delay-2">
+                    A switch between AI. Manage Desktop IDEs, CLI Agents, and Web AIs in a beautifully fluid, hardware-accelerated Launchpad experience.
+                </p>
+                <div class="hero-actions fade-up delay-3">
+                    <a href="https://snapcraft.io/aswitchi" class="btn-primary">
+                        <span>Get it from Snap Store</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                    </a>
+                    <a href="https://github.com/Maijied/AswitchI" class="btn-secondary">View Source</a>
+                </div>
             </div>
-            <img src="https://raw.githubusercontent.com/Maijied/AswitchI/main/assets/preview.png" alt="AswitchI Preview" onerror="this.src='https://placehold.co/800x450/0f172a/ffffff?text=AswitchI+Preview'">
-        </div>
-    </header>
 
-    <section id="features" class="features">
-        <div class="feature-card glass-panel">
-            <h3>Native GTK Integration</h3>
-            <p>Built with Python, GTK3, and WebKit2 for blazing fast hardware-accelerated rendering on Ubuntu.</p>
-        </div>
-        <div class="feature-card glass-panel">
-            <h3>Web AI Profiles</h3>
-            <p>Persistent encrypted sessions for Claude, ChatGPT, and Gemini. Never log in twice.</p>
-        </div>
-        <div class="feature-card glass-panel">
-            <h3>Fuzzy Search</h3>
-            <p>Instantly find and launch any AI workspace or CLI agent with a few keystrokes.</p>
-        </div>
-    </section>
+            <div class="app-showcase fade-up delay-4">
+                <div class="mac-window">
+                    <div class="title-bar">
+                        <div class="dots"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
+                    </div>
+                    <div class="window-content">
+                        <!-- We use our github social preview as the hero image -->
+                        <img src="https://raw.githubusercontent.com/Maijied/AswitchI/main/assets/social_preview.jpg" alt="AswitchI Interface">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features" id="features">
+            <div class="section-header fade-up">
+                <h2>Next-Gen Capabilities</h2>
+                <p>Designed for AI practitioners who demand speed and beauty.</p>
+            </div>
+            <div class="feature-grid">
+                <div class="card glass-card fade-up">
+                    <div class="icon-box cyan">⚡</div>
+                    <h3>Native GTK Integration</h3>
+                    <p>Built with Python, GTK3, and WebKit2 for blazing fast hardware-accelerated rendering on Ubuntu. Zero Electron bloat.</p>
+                </div>
+                <div class="card glass-card fade-up delay-1">
+                    <div class="icon-box purple">🌐</div>
+                    <h3>Encrypted Web AI Profiles</h3>
+                    <p>Persistent WebKit sessions for Claude, ChatGPT, and Gemini. Sandboxed, secure, and always logged in.</p>
+                </div>
+                <div class="card glass-card fade-up delay-2">
+                    <div class="icon-box amber">🔍</div>
+                    <h3>Deep Fuzzy Search</h3>
+                    <p>Instantly find and launch any AI workspace or CLI agent with a few keystrokes using our advanced indexing engine.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="code-section fade-up" id="architecture">
+            <div class="section-header">
+                <h2>Command Line Mastery</h2>
+                <p>Control the entire ecosystem directly from the terminal.</p>
+            </div>
+            <div class="terminal glass-card">
+                <div class="title-bar">
+                    <div class="dots"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
+                    <span class="term-title">bash - aswitchi</span>
+                </div>
+                <div class="term-body">
+                    <code><span class="prompt">$</span> aswitchi --install</code>
+                    <code class="output">Setting up desktop entries...<br>Symlinking executable to ~/.local/bin/aswitchi...<br>✔ Installation complete.</code>
+                    <code><span class="prompt">$</span> aswitchi --list</code>
+                    <code class="output">Detected AI Tools:<br>  Desktop AI IDEs: 2 (Cursor, Windsurf)<br>  CLI AI Agents: 1 (Aider)</code>
+                    <code class="blinking-cursor">_</code>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <footer>
-        <p>&copy; 2026 Lorapok Labs. Developed by Mohammad Maizied Hasan Majumder in Dhaka, Bangladesh.</p>
+        <div class="footer-content glass-card">
+            <div class="brand">
+                <span class="logo-text">AswitchI</span>
+                <p>A Lorapok Labs Innovation.</p>
+            </div>
+            <p>&copy; 2026 Mohammad Maizied Hasan Majumder. All rights reserved.</p>
+        </div>
     </footer>
+
+    <!-- GSAP for Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Initial load animations
+        gsap.utils.toArray('.fade-up').forEach((elem) => {
+            let delay = 0;
+            if(elem.classList.contains('delay-1')) delay = 0.1;
+            if(elem.classList.contains('delay-2')) delay = 0.2;
+            if(elem.classList.contains('delay-3')) delay = 0.3;
+            if(elem.classList.contains('delay-4')) delay = 0.5;
+
+            gsap.fromTo(elem, 
+                { y: 50, opacity: 0 },
+                {
+                    scrollTrigger: {
+                        trigger: elem,
+                        start: "top 85%",
+                    },
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.8,
+                    delay: delay,
+                    ease: "power3.out"
+                }
+            );
+        });
+
+        // Floating blobs parallax
+        gsap.to('.blob-1', {
+            y: "30vh",
+            x: "10vw",
+            scrollTrigger: { scrub: 1 }
+        });
+        gsap.to('.blob-2', {
+            y: "-30vh",
+            x: "-10vw",
+            scrollTrigger: { scrub: 1 }
+        });
+    </script>
 </body>
 </html>
