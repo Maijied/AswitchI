@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#312E81">
+        <animate attributeName="stop-color" values="#312E81;#1E1B4B;#4338CA;#312E81" dur="8s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="50%" stop-color="#1E1B4B">
+        <animate attributeName="stop-color" values="#1E1B4B;#0F172A;#1E1B4B" dur="8s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="100%" stop-color="#0F172A">
+        <animate attributeName="stop-color" values="#0F172A;#312E81;#0F172A" dur="8s" repeatCount="indefinite" />
+      </stop>
+    </linearGradient>
+
+    <!-- Core Lightning Glow Gradient -->
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818CF8">
+        <animate attributeName="stop-color" values="#818CF8;#38BDF8;#C084FC;#818CF8" dur="4s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" stop-color="#C084FC">
+        <animate attributeName="stop-color" values="#C084FC;#F472B6;#818CF8;#C084FC" dur="4s" repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+
+    <!-- Glowing Drop Shadow Filter with Pulse -->
+    <filter id="dropShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#6366F1" flood-opacity="0.6">
+        <animate attributeName="stdDeviation" values="12;22;12" dur="3s" repeatCount="indefinite"/>
+        <animate attributeName="flood-opacity" values="0.4;0.8;0.4" dur="3s" repeatCount="indefinite"/>
+      </feDropShadow>
+    </filter>
+
+    <filter id="coreGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <style>
+    @keyframes spinClockwise {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes spinCounter {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+    @keyframes pulseCore {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 12px rgba(129, 140, 248, 0.6)); }
+      50% { transform: scale(1.04); filter: drop-shadow(0 0 28px rgba(192, 132, 252, 0.9)); }
+    }
+    @keyframes nodeFloat1 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-3px, -5px); }
+    }
+    @keyframes nodeFloat2 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(4px, -4px); }
+    }
+    @keyframes nodeFloat3 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(3px, 5px); }
+    }
+    @keyframes nodeFloat4 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-4px, 4px); }
+    }
+    .ring-outer {
+      transform-origin: 256px 256px;
+      animation: spinClockwise 20s linear infinite;
+    }
+    .ring-inner {
+      transform-origin: 256px 256px;
+      animation: spinCounter 15s linear infinite;
+    }
+    .core-lightning {
+      transform-origin: 256px 256px;
+      animation: pulseCore 3s ease-in-out infinite;
+    }
+    .node-1 { animation: nodeFloat1 4s ease-in-out infinite; }
+    .node-2 { animation: nodeFloat2 4.5s ease-in-out infinite; }
+    .node-3 { animation: nodeFloat3 3.8s ease-in-out infinite; }
+    .node-4 { animation: nodeFloat4 4.2s ease-in-out infinite; }
+  </style>
+
+  <!-- Squircle Base with Cyber Glow Border -->
+  <rect x="32" y="32" width="448" height="448" rx="108" fill="url(#bgGrad)" stroke="rgba(255,255,255,0.18)" stroke-width="6"/>
+
+  <!-- Rotating Circuit Rings -->
+  <g class="ring-outer" opacity="0.65">
+    <circle cx="256" cy="256" r="140" fill="none" stroke="url(#glowGrad)" stroke-width="5" stroke-dasharray="24 16"/>
+  </g>
+
+  <g class="ring-inner" opacity="0.5">
+    <circle cx="256" cy="256" r="108" fill="none" stroke="#38BDF8" stroke-width="3" stroke-dasharray="14 12"/>
+  </g>
+
+  <circle cx="256" cy="256" r="88" fill="rgba(99,102,241,0.15)" stroke="#818CF8" stroke-width="3.5" opacity="0.8"/>
+
+  <!-- Animated Lightning AI Core -->
+  <g class="core-lightning" filter="url(#dropShadow)">
+    <path d="M276 140 L180 280 L250 280 L236 372 L332 232 L262 232 Z" fill="url(#glowGrad)"/>
+  </g>
+
+  <!-- Satellite AI Nodes -->
+  <g filter="url(#coreGlow)">
+    <circle class="node-1" cx="160" cy="160" r="15" fill="#38BDF8">
+      <animate attributeName="r" values="14;17;14" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle class="node-2" cx="352" cy="160" r="15" fill="#F472B6">
+      <animate attributeName="r" values="14;16;14" dur="3.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle class="node-3" cx="352" cy="352" r="15" fill="#34D399">
+      <animate attributeName="r" values="14;17;14" dur="2.8s" repeatCount="indefinite"/>
+    </circle>
+    <circle class="node-4" cx="160" cy="352" r="15" fill="#FBBF24">
+      <animate attributeName="r" values="14;16;14" dur="3.2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>
