@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeShellExecution": [
+      {
+        "command": "node .cursor/hooks/risky-command.mjs",
+        "matcher": "git\\s+(commit|push)|npm\\s+run\\s+(package|publish)|wrangler\\s+pages\\s+deploy|\\.github/workflows",
+        "timeout": 5,
+        "failClosed": true
+      }
+    ]
+  }
+}

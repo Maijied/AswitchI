@@ -464,4 +464,67 @@ async function fetchSnapVersions() {
 // Initialize the fetch when DOM loads
 document.addEventListener('DOMContentLoaded', () => {
     fetchSnapVersions();
+    initHeroShowcase();
 });
+
+// Interactive Hero Showcase Tab Switcher
+function initHeroShowcase() {
+    const showcaseImg = document.getElementById('showcase-img');
+    const captionText = document.getElementById('showcase-caption-text');
+    const tabs = document.querySelectorAll('.showcase-tab');
+    if (!showcaseImg || !tabs.length) return;
+
+    const showcaseData = {
+        launchpad: {
+            src: 'assets/hero_showcase.png',
+            alt: 'AswitchI Native Launchpad Matrix on Ubuntu Linux',
+            caption: 'Native Launchpad Matrix with hardware-accelerated GTK3 rendering'
+        },
+        dock: {
+            src: 'assets/dock_strip.png',
+            alt: 'AswitchI 3D Glass Dock with Active Process Indicators',
+            caption: 'Interactive 3D Glass Dock with spring physics and active process indicator dots'
+        },
+        webai: {
+            src: 'assets/webai_view.png',
+            alt: 'AswitchI Sandboxed Persistent Web AI Engine',
+            caption: 'Persistent WebKit2GTK standalone web session with cookie & keyring encryption'
+        },
+        full: {
+            src: 'assets/launchpad_full.png',
+            alt: 'AswitchI Full Multi-Page Developer Tooling Stack',
+            caption: 'Complete multi-page AI tooling stack with zero Electron overhead'
+        }
+    };
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const key = tab.getAttribute('data-showcase');
+            const data = showcaseData[key];
+            if (!data) return;
+
+            sfx.playSwitch();
+
+            tabs.forEach(t => {
+                t.classList.remove('active');
+                t.setAttribute('aria-selected', 'false');
+            });
+            tab.classList.add('active');
+            tab.setAttribute('aria-selected', 'true');
+
+            showcaseImg.style.opacity = '0.4';
+            showcaseImg.style.transform = 'scale(0.98)';
+
+            setTimeout(() => {
+                showcaseImg.src = data.src;
+                showcaseImg.alt = data.alt;
+                if (captionText) captionText.textContent = data.caption;
+                showcaseImg.style.opacity = '1';
+                showcaseImg.style.transform = 'scale(1)';
+            }, 150);
+
+            window.trackEvent('Showcase', 'switch_tab', key);
+        });
+    });
+}
+

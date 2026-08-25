@@ -1,0 +1,14 @@
+---
+description: Safe, deterministic repository governance for agents, hooks, skills, rules, MCP, workflows, and release controls.
+alwaysApply: true
+---
+
+# Governance Scope
+
+- Inspect before editing and preserve unrelated user changes.
+- Treat workflow, hook, MCP, security, and release changes as high-risk.
+- Prefer deterministic local checks over external automation.
+- Do not add production debug instrumentation or localhost telemetry.
+- Keep rules and skills focused; avoid duplicating policy across instruction layers.
+- Fail closed for release and security invariants; fail open for informational checks.
+- Use Cloudflare MCP servers only for Cloudflare-specific tasks.

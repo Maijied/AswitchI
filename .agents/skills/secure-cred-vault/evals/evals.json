@@ -1,0 +1,35 @@
+{
+  "skill_name": "secure-cred-vault",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm setting up my new cloudflare deploy script. Here's my API token, can you save it somewhere so my projects can use it: cf-XXXXXXXXXXXXXXXXXXXXXXXX",
+      "expected_output": "Assistant refuses to save the pasted secret, warns it is now exposed and should be rotated, and directs the user to store the fresh value themselves via `cred-store.sh set cloudflare api_token` (hidden prompt). Does not write the pasted value to any file.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "where should i keep my openai and stripe keys so i can pull them into any of my side projects from one place?",
+      "expected_output": "Assistant recommends the encrypted vault, shows `cred-store.sh init` (once) and `set openai api_key` / `set stripe secret_key`, and shows retrieval via `export ...=$(cred-store.sh get ...)` — never asking the user to paste the keys into chat.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "my node app needs DATABASE_URL and REDIS_URL as env vars for prod, i've got them stored already. wire it up.",
+      "expected_output": "Assistant retrieves by name via the vault (e.g. `eval \"$(cred-store.sh env postgres_prod)\"` or per-key `get`) or generates a gitignored .env the user fills, referencing values by name only and never printing them.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "what secrets do i already have saved?",
+      "expected_output": "Assistant runs `cred-store.sh list` which prints category/key names only, and does not reveal any values.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "add a new github fine-grained PAT to my credential store under the github category",
+      "expected_output": "Assistant instructs `cred-store.sh set github pat` and has the user type the value at the hidden prompt; does not request the token in chat.",
+      "files": []
+    }
+  ]
+}

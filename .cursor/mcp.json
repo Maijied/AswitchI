@@ -1,0 +1,35 @@
+{
+  "mcpServers": {
+    "browsermcp": {
+      "command": "npx",
+      "args": ["@browsermcp/mcp@latest"]
+    },
+    "artiforge": {
+      "type": "http",
+      "url": "https://tools.artiforge.ai/mcp?pat=${env:ARTIFORGE_PAT}"
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/home/maizied"
+      ]
+    },
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${env:GITHUB_TOKEN}"
+      }
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "fetch": {
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "mcp/fetch"]
+    }
+  }
+}

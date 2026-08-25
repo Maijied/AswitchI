@@ -1,0 +1,47 @@
+---
+description: Always drive browser automation through the user's real default Chrome with the "Maizied" profile (never a throwaway automation browser).
+alwaysApply: true
+---
+
+# Browser automation: use the real "Maizied" Chrome profile
+
+When any task needs a browser (logins, dashboards like Cloudflare, forms,
+scraping, testing), **use the user's real default browser with the `Maizied`
+profile** — never a fresh/throwaway automation browser. The Maizied profile is
+already signed in (Google, Cloudflare, etc.), which avoids "verify you are
+human" walls that block bundled automation builds (chrome-for-testing).
+
+- Default browser: `google-chrome` (`/opt/google/chrome/chrome`)
+- Profile: `Default` = **Maizied** (`mdshuvo40@gmail.com`)
+- Profiles dir: `~/.config/google-chrome`
+
+## Preferred: Browser MCP (real browser)
+
+Use the `user-browsermcp` MCP server — it drives the user's actual open Chrome
+tab. If it returns "No connection to browser extension", ask the user to click
+the **Browser MCP** extension icon in their Maizied Chrome and press **Connect**,
+then retry. This is the most faithful "use my default browser" path.
+
+## Alternative: agent-browser over CDP to real Chrome
+
+`agent-browser`'s bundled `chrome-for-testing` is NOT the user's browser and gets
+Cloudflare-challenged. To use the real profile, connect over a debug port:
+
+```bash
+# The user starts (or restarts) their real Chrome ONCE with a debug port:
+google-chrome --profile-directory=Default --remote-debugging-port=9222 &
+
+# Then attach:
+agent-browser connect 9222
+agent-browser snapshot -i
+```
+
+Do **not** restart the user's running Chrome autonomously (it closes their tabs);
+ask first.
+
+## Never do
+
+- Do not fall back to `agent-browser --profile Default` with the bundled
+  chrome-for-testing for authenticated sites — it triggers human-verification.
+- Do not create throwaway `--user-data-dir` profiles for tasks that need the
+  user's real login.
