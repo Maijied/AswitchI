@@ -47,7 +47,7 @@ export async function fetchSnapStoreChannels(): Promise<SnapChannelRelease[]> {
       { channel: 'stable', version: '1.0.0', revision: 2, architecture: 'arm64', releasedAt: '2026-08-25', status: 'active' },
       { channel: 'candidate', version: '1.0.0-rc1', revision: 1, architecture: 'amd64', releasedAt: '2026-08-24', status: 'active' },
       { channel: 'beta', version: '1.0.0-beta.2', revision: 1, architecture: 'amd64', releasedAt: '2026-08-24', status: 'active' },
-      { channel: 'edge', version: '1.0.0+git.main', revision: 2, architecture: 'amd64', releasedAt: '2026-08-25', status: 'active' }
+      { channel: 'edge', version: '1.0.0-edge.1', revision: 2, architecture: 'amd64', releasedAt: '2026-08-25', status: 'active' }
     ];
   }
 }

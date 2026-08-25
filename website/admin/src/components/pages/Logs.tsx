@@ -5,7 +5,7 @@ export default function Logs() {
   const [logs, setLogs] = useState([
     { id: 1, time: "06:40:02", text: "[SYSTEM] AswitchI Mission Control initialized on React 18 / Vite engine.", type: "info" },
     { id: 2, time: "06:40:05", text: "[AUTH] Master Administrator verified: mdshuvo40@gmail.com (Full Clearance).", type: "success" },
-    { id: 3, time: "06:40:07", text: "[SNAP] Live channels synchronized with Canonical Snapcraft Store API v2.", type: "info" },
+    { id: 3, time: "06:40:07", text: "[SNAP] Live channels synchronized with Snap Store API v2.", type: "info" },
     { id: 4, time: "06:40:12", text: "[PIPELINE] Multi-architecture CI/CD workflow run #32794745829 passing.", type: "success" },
     { id: 5, time: "06:40:18", text: "[KEYRING] WebKit2GTK isolated cookie vault active at ~/.config/aswitchi/webai-profile.", type: "info" }
   ]);

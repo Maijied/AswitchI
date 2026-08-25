@@ -22,7 +22,7 @@ export default function Overview() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="glass-panel p-5">
           <div className="flex items-center justify-between text-xs text-slate-400 font-semibold mb-2">
-            <span>CANONICAL SNAP STATUS</span>
+            <span>SNAP STORE STATUS</span>
             <span className="text-emerald-400 flex items-center gap-1">● Active</span>
           </div>
           <div className="text-xl font-bold text-cyan-400 mb-1">snapcraft.io/aswitchi</div>
@@ -61,8 +61,8 @@ export default function Overview() {
       <div className="glass-panel p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-lg font-bold text-white">Canonical Snapcraft Channel Matrix</h2>
-            <p className="text-xs text-slate-400">Live deployment tracking across Canonical release tracks</p>
+            <h2 className="text-lg font-bold text-white">Snap Store Release Channel Matrix</h2>
+            <p className="text-xs text-slate-400">Live deployment tracking across active release tracks</p>
           </div>
           <a
             href="https://snapcraft.io/aswitchi"

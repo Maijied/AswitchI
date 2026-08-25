@@ -46,7 +46,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://aswitchi.lorapok.tech/" />
     <meta property="og:title" content="AswitchI — The Linux Hub for AI Engineering" />
-    <meta property="og:description" content="Available on Canonical Snap Store. Manage Desktop IDEs, CLI Agents, and Web AIs in a fluid, hardware-accelerated macOS-style launchpad on Ubuntu." />
+    <meta property="og:description" content="Native Linux Launchpad & 3D Dock. Manage Desktop IDEs, CLI Agents, and Web AIs in a fluid, hardware-accelerated interface on Ubuntu." />
     <meta property="og:image" content="https://raw.githubusercontent.com/Maijied/AswitchI/main/assets/social_preview.jpg" />
     <meta property="og:image:width" content="1280" />
     <meta property="og:image:height" content="640" />
@@ -55,7 +55,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://aswitchi.lorapok.tech/" />
     <meta name="twitter:title" content="AswitchI — A Switch Between AI (Lorapok Labs)" />
-    <meta name="twitter:description" content="Native Linux dock and launchpad engineered for AI developers. Get it on Canonical Snap Store." />
+    <meta name="twitter:description" content="Native Linux dock and launchpad engineered for AI developers. Fast, lightweight, zero Electron overhead." />
     <meta name="twitter:image" content="https://raw.githubusercontent.com/Maijied/AswitchI/main/assets/social_preview.jpg" />
 
     <!-- Structured Data (JSON-LD) -->
@@ -77,7 +77,7 @@
         "price": "0.00",
         "priceCurrency": "USD"
       },
-      "description": "Hardware-accelerated Linux Launchpad & AI Workspace switcher available on Canonical Snap Store."
+      "description": "Hardware-accelerated Linux Launchpad & AI Workspace switcher for Ubuntu, Debian, Arch, and Fedora."
     }
     </script>
 
@@ -235,7 +235,7 @@
                         <span class="hud-pulse-dot"></span>
                         <span class="hud-title">SYSTEM ORCHESTRATION HUD</span>
                     </div>
-                    <span class="hud-socket">CANONICAL SNAP CHANNEL: <strong>STABLE</strong></span>
+                    <span class="hud-socket">OFFICIAL RELEASE: <strong>STABLE (v1.0.0)</strong></span>
                 </div>
                 <div class="hud-metrics-grid">
                     <div class="hud-stat-card">
@@ -392,29 +392,24 @@
             <div class="install-card glass-morphism reveal-node">
                 <div class="install-header">
                     <h2 class="install-title balance-text">Ready to supercharge your Linux AI workflow?</h2>
-                    <p class="install-subtitle balance-text">Install directly from Canonical Snap Store or build natively from GitHub.</p>
+                    <p class="install-subtitle balance-text">Install directly via Snap Store or build natively from GitHub.</p>
                 </div>
 
                 <div class="install-options-grid">
                     <!-- Snap Store Card -->
                     <div class="install-box snap-highlight">
-                        <div class="box-tag">RECOMMENDED • SNAP STORE</div>
-                        <div class="snap-box-header" style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom: 15px;">
+                        <div class="box-tag">RECOMMENDED • SNAP PACKAGE</div>
+                        <div class="snap-box-header" style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom: 12px;">
                             <a href="https://snapcraft.io/aswitchi" target="_blank" rel="noopener">
                                 <img alt="Get it from the Snap Store" src="https://snapcraft.io/en/dark/install.svg" />
                             </a>
                         </div>
-                        <h3>Canonical Snap (Ubuntu / Debian / Arch / Fedora)</h3>
-                        
-                        <!-- Snapcraft Embedded Card -->
-                        <div style="margin: 20px 0; max-width: 100%; overflow: hidden; height: 380px;">
-                            <iframe title="Publicise card" src="https://snapcraft.io/aswitchi/embedded?button=black&channels=true&summary=true&screenshot=true" style="width: 100%; height: 100%; border: 1px solid #333; border-radius: 8px; background: transparent;"></iframe>
-                        </div>
+                        <h3>Snap Store (Ubuntu / Debian / Arch / Fedora)</h3>
 
                         <div class="code-pill">
                             <code>sudo snap install aswitchi --classic</code>
                         </div>
-                        <p class="box-caption">Universal auto-updating package for <strong>amd64</strong> and <strong>arm64</strong>. View on <a href="https://snapcraft.io/aswitchi" target="_blank" rel="noopener" style="color:var(--cyan);">snapcraft.io/aswitchi</a>.</p>
+                        <p class="box-caption">Universal auto-updating package for <strong>amd64</strong> and <strong>arm64</strong> architectures. Zero dependency management required.</p>
                         
                         <!-- Dynamic Version Tracker -->
                         <div class="dynamic-version-tracker" style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
@@ -433,6 +428,11 @@
                             <code>git clone https://github.com/Maijied/AswitchI.git && cd AswitchI && ./scripts/install-desktop.sh</code>
                         </div>
                         <p class="box-caption">Installs local desktop shortcuts, icons, and symlinks directly into your system user directory.</p>
+
+                        <div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
+                            <h4 style="margin: 0 0 8px 0; font-size: 0.85rem; color: #8892b0; text-transform: uppercase; letter-spacing: 1px;">System Requirements</h4>
+                            <p style="margin: 0; font-size: 0.8rem; color: #94a3b8; line-height: 1.5;">Ubuntu 20.04+, Debian 11+, Arch, Fedora. Requires Python 3.10+, GTK3, and WebKit2GTK-4.1.</p>
+                        </div>
                     </div>
                 </div>
             </div>

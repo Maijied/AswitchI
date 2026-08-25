@@ -58,7 +58,7 @@ export default function Deployments() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-bold text-white">Deployment & Release Maintenance</h2>
-          <p className="text-xs text-slate-400">Control GitHub Actions workflows and Canonical Snap Store releases</p>
+          <p className="text-xs text-slate-400">Control GitHub Actions workflows and Linux package releases</p>
         </div>
         <button
           type="button"
@@ -85,15 +85,15 @@ export default function Deployments() {
 
       {/* Control Panels Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Panel 1: Snapcraft 9 Operations Console */}
+        {/* Panel 1: Linux Package Operations Console */}
         <div className="glass-panel p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
               <Rocket size={16} className="text-cyan-400" />
-              <span>Snapcraft 9 Release Operations</span>
+              <span>Package Release Operations</span>
             </h3>
             <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
-              Canonical Docs Spec
+              Release Spec
             </span>
           </div>
 
