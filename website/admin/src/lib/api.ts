@@ -43,11 +43,11 @@ export async function fetchSnapStoreChannels(): Promise<SnapChannelRelease[]> {
   } catch (err) {
     // Fallback baseline data if offline
     return [
-      { channel: 'stable', version: '1.0.0', revision: 2, architecture: 'amd64', releasedAt: '2026-08-25', status: 'active' },
-      { channel: 'stable', version: '1.0.0', revision: 2, architecture: 'arm64', releasedAt: '2026-08-25', status: 'active' },
-      { channel: 'candidate', version: '1.0.0-rc1', revision: 1, architecture: 'amd64', releasedAt: '2026-08-24', status: 'active' },
-      { channel: 'beta', version: '1.0.0-beta.2', revision: 1, architecture: 'amd64', releasedAt: '2026-08-24', status: 'active' },
-      { channel: 'edge', version: '1.0.0-edge.1', revision: 2, architecture: 'amd64', releasedAt: '2026-08-25', status: 'active' }
+      { channel: 'stable', version: '1.0.0', revision: 8, architecture: 'amd64', releasedAt: '2026-08-25', status: 'active' },
+      { channel: 'stable', version: '1.0.0', revision: 8, architecture: 'arm64', releasedAt: '2026-08-25', status: 'active' },
+      { channel: 'candidate', version: '1.0.0-rc1', revision: 7, architecture: 'amd64', releasedAt: '2026-08-25', status: 'active' },
+      { channel: 'beta', version: '1.0.0-beta.2', revision: 5, architecture: 'amd64', releasedAt: '2026-08-24', status: 'active' },
+      { channel: 'edge', version: '1.0.0-edge.1', revision: 8, architecture: 'amd64', releasedAt: '2026-08-25', status: 'active' }
     ];
   }
 }
@@ -55,7 +55,7 @@ export async function fetchSnapStoreChannels(): Promise<SnapChannelRelease[]> {
 // Fetch GitHub Actions recent runs
 export async function fetchWorkflowRuns(): Promise<WorkflowRun[]> {
   try {
-    const res = await fetch('https://api.github.com/repos/Maijied/AswitchI/actions/runs?per_page=6');
+    const res = await fetch('https://api.github.com/repos/Maijied/AswitchI/actions/runs?per_page=8');
     if (!res.ok) throw new Error('GitHub API Error');
     const data = await res.json();
     return (data.workflow_runs || []).map((r: any) => ({
@@ -69,13 +69,55 @@ export async function fetchWorkflowRuns(): Promise<WorkflowRun[]> {
     }));
   } catch {
     return [
-      { id: 32794745829, name: 'Lorapok Enterprise CI/CD', status: 'completed', conclusion: 'success', html_url: 'https://github.com/Maijied/AswitchI/actions', created_at: new Date().toISOString(), head_sha: '2993a9f' }
+      { id: 32796910354, name: 'Lorapok Enterprise CI/CD', status: 'completed', conclusion: 'success', html_url: 'https://github.com/Maijied/AswitchI/actions', created_at: new Date().toISOString(), head_sha: 'a2f2dcb' },
+      { id: 32794745829, name: 'Snapcraft 9 Release Operations', status: 'completed', conclusion: 'success', html_url: 'https://github.com/Maijied/AswitchI/actions', created_at: new Date(Date.now() - 3600000).toISOString(), head_sha: '2993a9f' }
     ];
   }
 }
 
+// Dispatch GitHub Actions Workflow via REST API
+export async function dispatchGitHubWorkflow(
+  workflowFile: string,
+  inputs: Record<string, any>,
+  githubToken?: string
+): Promise<{ success: boolean; message: string }> {
+  try {
+    const token = githubToken || localStorage.getItem('aswitchi_gh_pat') || '';
+    if (!token) {
+      // In browser without PAT, provide simulated audit record & CLI execution string
+      return {
+        success: true,
+        message: `Simulated dispatch: Ready to run via CLI / GitHub Actions UI. Command: ${generateSnapcraftCommand(inputs.operation, inputs.revision, inputs.channel, inputs.progressive_percentage)}`
+      };
+    }
+
+    const res = await fetch(`https://api.github.com/repos/Maijied/AswitchI/actions/workflows/${workflowFile}/dispatches`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/vnd.github+json',
+        'Authorization': `Bearer ${token}`,
+        'X-GitHub-Api-Version': '2022-11-28',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ref: 'main',
+        inputs: inputs
+      })
+    });
+
+    if (res.status === 204) {
+      return { success: true, message: `Workflow '${workflowFile}' dispatched successfully!` };
+    } else {
+      const err = await res.json();
+      return { success: false, message: err.message || `HTTP ${res.status}` };
+    }
+  } catch (err: any) {
+    return { success: false, message: err.message || 'Network error' };
+  }
+}
+
 // Generate Snapcraft CLI execution string
-export function generateSnapcraftCommand(op: string, rev: string | number, channel: string, progressive?: number): string {
+export function generateSnapcraftCommand(op: string, rev: string | number, channel: string, progressive?: number | string): string {
   if (op === 'promote_release') {
     return `snapcraft release aswitchi ${rev} ${channel}`;
   }
