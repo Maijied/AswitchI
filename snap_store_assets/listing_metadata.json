@@ -1,0 +1,32 @@
+{
+  "title": "AswitchI",
+  "summary": "Native Ubuntu Launchpad & AI Switcher",
+  "description": "**AswitchI** by Lorapok Labs brings the fluid, intuitive experience of the macOS Launchpad and 3D Dock directly to Ubuntu, engineered exclusively for AI developer productivity.\n\nIt serves as a unified, central dashboard that automatically scans, organizes, and launches your entire AI engineering stack with zero friction:\n\n* **Desktop AI IDEs:** One-click access to specialized environments like Cursor and Windsurf.\n* **CLI AI Agents:** Instantly deploy terminal-based agents like Cline, Aider, and Antigravity.\n* **Persistent Web AIs:** Run ChatGPT, Claude, and Gemini in isolated, persistent web sessions without needing multiple browser tabs.\n\nPowered by a lightweight WebKit2GTK architecture, AswitchI guarantees blazing-fast hardware acceleration, seamless context switching, and deep native Linux desktop integration.\n\nDiscover a cleaner way to build with AI.\nLearn more: https://aswitchi.lorapok.tech",
+  "license": "GPL-3.0-or-later",
+  "confinement": "classic",
+  "grade": "stable",
+  "contact_information": {
+    "primary_website": "https://aswitchi.lorapok.tech",
+    "other_websites": [
+      "https://lorapok.tech",
+      "https://media.lorapok.tech",
+      "https://cursor.lorapok.tech"
+    ],
+    "contacts": [
+      "mailto:lorapokdev@gmail.com",
+      "mailto:maizied@lorapok.tech",
+      "https://lorapok.tech/#contact",
+      "https://gravatar.com/lorapok",
+      "https://x.com/LorapokLabs",
+      "https://www.linkedin.com/showcase/lorapok/",
+      "https://www.instagram.com/lorapoklabs/",
+      "https://www.facebook.com/lorapoklabs"
+    ],
+    "donations": [
+      "https://github.com/sponsors/Maijied",
+      "https://lorapok.tech/#donate"
+    ],
+    "source_code": "https://github.com/Maijied/AswitchI",
+    "issues": "https://github.com/Maijied/AswitchI/issues"
+  }
+}
