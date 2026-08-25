@@ -65,17 +65,9 @@ jobs:
         run: |
           sudo snap install snapcraft --classic
 
-      - name: 🔑 Authenticate with Snapcraft
+      - name: 🚀 Execute Snapcraft 9 Operation
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
-        run: |
-          if [ -n "$SNAPCRAFT_STORE_CREDENTIALS" ]; then
-            echo "$SNAPCRAFT_STORE_CREDENTIALS" | snapcraft login --with -
-          else
-            echo "⚠️ No SNAPCRAFT_STORE_CREDENTIALS secret configured. Proceeding with environment auth if available."
-          fi
-
-      - name: 🚀 Execute Snapcraft 9 Operation
         run: |
           OP="${{ inputs.operation }}"
           REV="${{ inputs.revision }}"

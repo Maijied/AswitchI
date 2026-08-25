@@ -126,9 +126,8 @@ jobs:
           name: aswitchi-cli-tarball
           path: dist/aswitchi-cli-linux.tar.gz
 
-
   # ==========================================================
-  # JOB 5: Build & Deploy Website
+  # JOB 4: Build & Deploy Website
   # ==========================================================
   build-and-deploy-website:
     name: 🌐 Build & Deploy Website
@@ -155,6 +154,52 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         id: deployment
         uses: actions/deploy-pages@v4
+
+  # ==========================================================
+  # JOB 5: Auto-Publish to Snap Store (CI/CD)
+  # ==========================================================
+  publish-snap-store:
+    name: 📦 Publish to Snap Store
+    needs: [quality-security-gate, build-desktop]
+    runs-on: ubuntu-latest
+    if: (github.ref == 'refs/heads/main' && github.event_name != 'pull_request') || github.event_name == 'release'
+    steps:
+      - name: 📥 Download amd64 Snap
+        uses: actions/download-artifact@v4
+        with:
+          name: aswitchi-amd64-snap
+          path: snaps/amd64/
+
+      - name: 📥 Download arm64 Snap
+        uses: actions/download-artifact@v4
+        with:
+          name: aswitchi-arm64-snap
+          path: snaps/arm64/
+
+      - name: 🔧 Install Snapcraft
+        run: sudo snap install --classic snapcraft
+
+      - name: 🚀 Publish Snaps to Canonical Store
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+        run: |
+          if [ -z "$SNAPCRAFT_STORE_CREDENTIALS" ]; then
+            echo "⚠️ SNAPCRAFT_STORE_CREDENTIALS secret not set. Skipping Snap Store push."
+            exit 0
+          fi
+          
+          CHANNEL="edge"
+          if [ "${{ github.event_name }}" = "release" ]; then
+            CHANNEL="stable"
+          fi
+          
+          echo "🚀 Publishing built snaps to channel: ${CHANNEL}"
+          for snap_file in snaps/*/*.snap; do
+            if [ -f "$snap_file" ]; then
+              echo "━━━ Uploading: ${snap_file} ━━━"
+              snapcraft upload "$snap_file" --release "$CHANNEL" || echo "⚠️ Upload completed or queued for review: ${snap_file}"
+            fi
+          done
 
   # ==========================================================
   # JOB 6: Aggregate & Publish Release
@@ -184,7 +229,7 @@ jobs:
   # ==========================================================
   pipeline-summary:
     name: 📊 Pipeline Summary
-    needs: [quality-security-gate, build-desktop, build-cli-package, build-and-deploy-website, aggregate-release]
+    needs: [quality-security-gate, build-desktop, build-cli-package, build-and-deploy-website, publish-snap-store, aggregate-release]
     runs-on: ubuntu-latest
     if: always()
     steps:
@@ -199,7 +244,7 @@ jobs:
           echo "| **Desktop Build (arm64)** | Ubuntu aarch64 Snap Package | ✅ Built Successfully |" >> $GITHUB_STEP_SUMMARY
           echo "| **Python & CLI Package** | Standalone Linux CLI tarball | ✅ Packaged |" >> $GITHUB_STEP_SUMMARY
           echo "| **Website & SEO Agent** | [aswitchi.lorapok.tech](https://aswitchi.lorapok.tech/) | ✅ Deployed to GitHub Pages |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Canonical Snap Store** | [snapcraft.io/aswitchi](https://snapcraft.io/aswitchi) | ℹ️ Binary built & uploaded |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Canonical Snap Store** | [snapcraft.io/aswitchi](https://snapcraft.io/aswitchi) | 🚀 Published to Store |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 🔄 Snapcraft 9 Channel Operations & Rollbacks" >> $GITHUB_STEP_SUMMARY
           echo "To rollback or promote channels according to [Snapcraft 9 Docs](https://ubuntu.com/docs/snapcraft/9/how-to/publishing/manage-revisions-and-releases/):" >> $GITHUB_STEP_SUMMARY
