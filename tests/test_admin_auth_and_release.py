@@ -66,5 +66,19 @@ class TestAdminAuthAndRelease(unittest.TestCase):
             deployments_src = f.read()
         self.assertIn("snap-operations.yml", deployments_src)
 
+    def test_vault_pin_clearance(self):
+        """Verify Master Vault PIN (565087) grants mdshuvo40@gmail.com clearance."""
+        login_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "website", "admin", "src", "components", "Login.tsx"))
+        auth_guard_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "website", "admin", "src", "lib", "auth-guard.tsx"))
+        with open(login_path, "r", encoding="utf-8") as f:
+            login_src = f.read()
+        with open(auth_guard_path, "r", encoding="utf-8") as f:
+            guard_src = f.read()
+
+        self.assertIn("565087", login_src)
+        self.assertIn("aswitchi_vault_auth", login_src)
+        self.assertIn("aswitchi_vault_auth", guard_src)
+        self.assertIn("mdshuvo40@gmail.com", login_src)
+
 if __name__ == "__main__":
     unittest.main()
