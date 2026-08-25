@@ -7,24 +7,22 @@ import Deployments from "./pages/Deployments";
 import Ecosystem from "./pages/Ecosystem";
 import SeoDashboard from "./pages/SeoDashboard";
 import Logs from "./pages/Logs";
-import { LayoutDashboard, Rocket, Layers, Search, Terminal } from "lucide-react";
+import Team from "./pages/Team";
+import { LayoutDashboard, Rocket, Layers, Search, Terminal, Users } from "lucide-react";
+import { useAuth } from "../lib/auth-guard";
 
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState<"overview" | "deployments" | "ecosystem" | "seo" | "logs">("overview");
-  const [currentUser, setCurrentUser] = useState(auth.currentUser);
-
-  useEffect(() => {
-    const unsub = auth.onAuthStateChanged(setCurrentUser);
-    return unsub;
-  }, []);
+  const [activeTab, setActiveTab] = useState<"overview" | "deployments" | "ecosystem" | "seo" | "logs" | "team">("overview");
+  const { user: currentUser, access } = useAuth();
 
   const tabs = [
-    { id: "overview", label: "Overview & HUD", icon: LayoutDashboard },
-    { id: "deployments", label: "Deployments & Release", icon: Rocket },
-    { id: "ecosystem", label: "AI Ecosystem", icon: Layers },
-    { id: "seo", label: "SEO & Traffic", icon: Search },
-    { id: "logs", label: "Security Logs", icon: Terminal },
-  ];
+    { id: "overview", label: "Overview & HUD", icon: LayoutDashboard, show: true },
+    { id: "deployments", label: "Deployments & Release", icon: Rocket, show: access?.permissions?.canDeploy },
+    { id: "ecosystem", label: "AI Ecosystem", icon: Layers, show: true },
+    { id: "seo", label: "SEO & Traffic", icon: Search, show: access?.permissions?.canEditContent },
+    { id: "logs", label: "Security Logs", icon: Terminal, show: access?.permissions?.canViewLogs },
+    { id: "team", label: "Access & Team", icon: Users, show: access?.permissions?.canManageUsers },
+  ].filter(tab => tab.show);
 
   return (
     <div className="min-h-screen bg-[#04060d] flex flex-col relative pb-12">
@@ -82,6 +80,7 @@ export default function Dashboard() {
             {activeTab === "ecosystem" && <Ecosystem />}
             {activeTab === "seo" && <SeoDashboard />}
             {activeTab === "logs" && <Logs />}
+            {activeTab === "team" && <Team />}
           </motion.div>
         </AnimatePresence>
       </main>

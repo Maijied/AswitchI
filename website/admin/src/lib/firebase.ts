@@ -1,5 +1,7 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getAnalytics, isSupported } from "firebase/analytics";
 import { getAnalytics, isSupported } from "firebase/analytics";
 
 const DEFAULT_FIREBASE_CONFIG = {
@@ -35,3 +37,4 @@ if (typeof window !== "undefined") {
     }
   });
 }
+export const db = getFirestore(app);
