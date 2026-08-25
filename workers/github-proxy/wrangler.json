@@ -1,0 +1,5 @@
+{
+  "name": "aswitchi-github-proxy",
+  "main": "src/index.ts",
+  "compatibility_date": "2024-02-23"
+}

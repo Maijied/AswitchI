@@ -82,20 +82,42 @@ export async function dispatchGitHubWorkflow(
   githubToken?: string
 ): Promise<{ success: boolean; message: string }> {
   try {
-    const token = githubToken || localStorage.getItem('aswitchi_gh_pat') || '';
-    if (!token) {
-      // In browser without PAT, provide simulated audit record & CLI execution string
-      return {
-        success: true,
-        message: `Simulated dispatch: Ready to run via CLI / GitHub Actions UI. Command: ${generateSnapcraftCommand(inputs.operation, inputs.revision, inputs.channel, inputs.progressive_percentage)}`
-      };
+    // Determine if we're using the Cloudflare Worker Backend Proxy
+    const workerUrl = import.meta.env.VITE_CF_WORKER_URL;
+    const vaultPin = sessionStorage.getItem("aswitchi_vault_auth_pin");
+
+    if (workerUrl && vaultPin) {
+      // PROXY VIA CLOUDFLARE WORKER (NO PAT EXPOSED)
+      const res = await fetch(workerUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${vaultPin}`
+        },
+        body: JSON.stringify({
+          workflow: workflowFile,
+          inputs: inputs
+        })
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        return { success: true, message: data.message };
+      } else {
+        return { success: false, message: data.error || `Worker HTTP ${res.status}` };
+      }
+    }
+
+    // FALLBACK: RAW GITHUB PAT (Legacy)
+    if (!githubToken) {
+      return { success: false, message: 'No Auth Token or Worker Backend provided. Set up Cloudflare Worker or supply a PAT.' };
     }
 
     const res = await fetch(`https://api.github.com/repos/Maijied/AswitchI/actions/workflows/${workflowFile}/dispatches`, {
       method: 'POST',
       headers: {
         'Accept': 'application/vnd.github+json',
-        'Authorization': `Bearer ${token}`,
+        'Authorization': `Bearer ${githubToken}`,
         'X-GitHub-Api-Version': '2022-11-28',
         'Content-Type': 'application/json'
       },
