@@ -21,6 +21,8 @@ logs/
 *.log
 release-assets/
 /tmp/
+node_modules/
+.vite/
 
 # OS / Editor Files
 .DS_Store

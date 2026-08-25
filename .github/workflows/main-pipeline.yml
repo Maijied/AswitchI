@@ -15,8 +15,8 @@ permissions:
   id-token: write
 
 concurrency:
-  group: ci-${{ github.ref_name }}
-  cancel-in-progress: true
+  group: ci-${{ github.workflow }}-${{ github.ref_name }}
+  cancel-in-progress: false
 
 env:
   APP_NAME: "aswitchi"
@@ -140,9 +140,22 @@ jobs:
       - name: 🤖 Execute SEO Specialist Agent
         run: python3 scripts/seo_agent.py
 
+      - name: 🛠️ Set up Node.js for Web Build
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: ⚛️ Build React Admin Panel Bundle
+        run: |
+          cd website/admin
+          npm install
+          npm run build
+          # Deploy built SPA bundle directly into website/admin root
+          cp -r dist/* .
+
       - name: 🌐 Configure GitHub Pages
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
 
       - name: 📦 Upload Pages Artifact
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
