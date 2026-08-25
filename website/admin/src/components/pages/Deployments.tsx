@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { 
   Rocket, 
   RotateCcw, 
@@ -10,7 +11,6 @@ import {
   Play, 
   Terminal, 
   Key, 
-  Sliders, 
   Lock 
 } from "lucide-react";
 import { 
@@ -103,8 +103,28 @@ export default function Deployments() {
     setMessage({ type: "success", text: `✓ Copied CLI command to clipboard: ${cmd}` });
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 15 },
+    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 25 } }
+  };
+
   return (
-    <div className="space-y-6">
+    <motion.div 
+      className="space-y-6"
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+    >
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
@@ -112,15 +132,19 @@ export default function Deployments() {
           <p className="text-xs text-slate-400">Publish, phase, promote, or rollback Snap package revisions directly</p>
         </div>
         <div className="flex items-center gap-2">
-          <button
+          <motion.button
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
             type="button"
             onClick={() => setShowTokenInput(!showTokenInput)}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 text-purple-300 rounded-lg text-xs font-semibold border border-purple-500/30 transition-colors cursor-pointer"
           >
             <Key size={13} />
             <span>{ghToken ? "GitHub PAT Configured" : "Add GitHub PAT"}</span>
-          </button>
-          <button
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
             type="button"
             onClick={loadRuns}
             disabled={refreshing}
@@ -128,13 +152,18 @@ export default function Deployments() {
           >
             <RefreshCw size={13} className={refreshing ? "animate-spin" : ""} />
             <span>Refresh</span>
-          </button>
+          </motion.button>
         </div>
       </div>
 
       {/* GitHub Token Config Box */}
       {showTokenInput && (
-        <div className="p-4 rounded-xl bg-purple-500/10 border border-purple-500/30 text-xs space-y-2">
+        <motion.div 
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          className="p-4 rounded-xl bg-purple-500/10 border border-purple-500/30 text-xs space-y-2"
+        >
           <div className="font-semibold text-purple-300 flex items-center gap-2">
             <Lock size={14} />
             <span>GitHub Personal Access Token (Workflow Dispatch Clearance)</span>
@@ -158,25 +187,29 @@ export default function Deployments() {
               Done
             </button>
           </div>
-        </div>
+        </motion.div>
       )}
 
       {message && (
-        <div className={`p-4 rounded-xl text-xs flex items-start gap-3 ${
-          message.type === "success" ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-300" : "bg-rose-500/10 border border-rose-500/30 text-rose-300"
-        }`}>
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={`p-4 rounded-xl text-xs flex items-start gap-3 ${
+            message.type === "success" ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-300" : "bg-rose-500/10 border border-rose-500/30 text-rose-300"
+          }`}
+        >
           {message.type === "success" ? <CheckCircle2 size={16} className="shrink-0 mt-0.5" /> : <AlertCircle size={16} className="shrink-0 mt-0.5" />}
           <div>
             <div className="font-semibold">{message.type === "success" ? "Operation Authorized" : "Operation Warning"}</div>
             <div className="mt-0.5 text-slate-300">{message.text}</div>
           </div>
-        </div>
+        </motion.div>
       )}
 
       {/* Main Control Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Panel 1: Snap Release & Promotion Controller */}
-        <div className="glass-panel p-6 space-y-4">
+        <motion.div variants={cardVariants} className="glass-panel p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
               <Rocket size={16} className="text-cyan-400" />
@@ -271,7 +304,9 @@ export default function Deployments() {
           </div>
 
           <div className="pt-2 flex gap-2">
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               type="button"
               onClick={handleTriggerSnapOp}
               disabled={dispatching}
@@ -279,20 +314,22 @@ export default function Deployments() {
             >
               <Play size={14} />
               <span>{dispatching ? "Dispatching Operation..." : "Execute Release Operation"}</span>
-            </button>
-            <button
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               type="button"
               onClick={handleCopyCLI}
               className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 bg-white/5 hover:bg-white/10 text-slate-300 font-semibold rounded-lg text-xs border border-white/10 cursor-pointer"
             >
               <Terminal size={14} />
               <span>Copy CLI</span>
-            </button>
+            </motion.button>
           </div>
-        </div>
+        </motion.div>
 
         {/* Panel 2: Emergency Instant Rollback Safety Vault */}
-        <div className="glass-panel p-6 space-y-4 border-rose-500/20 bg-rose-950/5">
+        <motion.div variants={cardVariants} className="glass-panel p-6 space-y-4 border-rose-500/20 bg-rose-950/5">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-rose-400 uppercase tracking-wider flex items-center gap-2">
               <ShieldAlert size={16} className="text-rose-400" />
@@ -308,12 +345,14 @@ export default function Deployments() {
           </p>
 
           <div className="space-y-2.5">
-            <div className="p-3 bg-black/40 border border-white/5 rounded-xl flex items-center justify-between text-xs">
+            <div className="p-3 bg-black/40 border border-white/5 rounded-xl flex items-center justify-between text-xs hover:border-rose-500/30 transition-colors">
               <div>
                 <div className="font-bold text-white">Revision 7 (v1.0.0-rc1)</div>
                 <div className="text-[11px] text-slate-400">Tested Clean • amd64 & arm64</div>
               </div>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 type="button"
                 onClick={() => handleInstantRollback("7")}
                 disabled={dispatching}
@@ -321,15 +360,17 @@ export default function Deployments() {
               >
                 <RotateCcw size={13} />
                 <span>Rollback to Rev 7</span>
-              </button>
+              </motion.button>
             </div>
 
-            <div className="p-3 bg-black/40 border border-white/5 rounded-xl flex items-center justify-between text-xs">
+            <div className="p-3 bg-black/40 border border-white/5 rounded-xl flex items-center justify-between text-xs hover:border-rose-500/30 transition-colors">
               <div>
                 <div className="font-bold text-white">Revision 5 (v1.0.0-beta.2)</div>
                 <div className="text-[11px] text-slate-400">Baseline Multi-Arch • Stable</div>
               </div>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 type="button"
                 onClick={() => handleInstantRollback("5")}
                 disabled={dispatching}
@@ -337,15 +378,17 @@ export default function Deployments() {
               >
                 <RotateCcw size={13} />
                 <span>Rollback to Rev 5</span>
-              </button>
+              </motion.button>
             </div>
 
-            <div className="p-3 bg-black/40 border border-white/5 rounded-xl flex items-center justify-between text-xs">
+            <div className="p-3 bg-black/40 border border-white/5 rounded-xl flex items-center justify-between text-xs hover:border-rose-500/30 transition-colors">
               <div>
                 <div className="font-bold text-white">Revision 2 (Initial Stable)</div>
                 <div className="text-[11px] text-slate-400">Legacy Safe Fallback</div>
               </div>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 type="button"
                 onClick={() => handleInstantRollback("2")}
                 disabled={dispatching}
@@ -353,14 +396,14 @@ export default function Deployments() {
               >
                 <RotateCcw size={13} />
                 <span>Rollback to Rev 2</span>
-              </button>
+              </motion.button>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* CI/CD & Operations Run Log Table */}
-      <div className="glass-panel p-6">
+      <motion.div variants={cardVariants} className="glass-panel p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-sm font-bold text-white uppercase tracking-wider">GitHub Actions Workflow Audit Log</h3>
@@ -425,7 +468,7 @@ export default function Deployments() {
             </table>
           </div>
         )}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

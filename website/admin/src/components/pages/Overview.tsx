@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { fetchSnapStoreChannels, fetchWorkflowRuns, type SnapChannelRelease, type WorkflowRun } from "../../lib/api";
 import { ExternalLink, CheckCircle2, AlertTriangle, ShieldCheck, Activity, Cpu, HardDrive } from "lucide-react";
 
@@ -16,49 +17,69 @@ export default function Overview() {
       .finally(() => setLoading(false));
   }, []);
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.08
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+  };
+
   return (
-    <div className="space-y-6">
+    <motion.div 
+      className="space-y-6"
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+    >
       {/* Metric Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="glass-panel p-5">
+        <motion.div variants={itemVariants} className="glass-panel p-5 hover:border-cyan-500/40 transition-colors">
           <div className="flex items-center justify-between text-xs text-slate-400 font-semibold mb-2">
             <span>SNAP STORE STATUS</span>
             <span className="text-emerald-400 flex items-center gap-1">● Active</span>
           </div>
           <div className="text-xl font-bold text-cyan-400 mb-1">snapcraft.io/aswitchi</div>
           <div className="text-xs text-slate-400">Multi-Arch: <code className="text-slate-300">amd64</code> + <code className="text-slate-300">arm64</code></div>
-        </div>
+        </motion.div>
 
-        <div className="glass-panel p-5">
+        <motion.div variants={itemVariants} className="glass-panel p-5 hover:border-emerald-500/40 transition-colors">
           <div className="flex items-center justify-between text-xs text-slate-400 font-semibold mb-2">
             <span>CONTINUOUS INTEGRATION</span>
             <span className="text-emerald-400 flex items-center gap-1">● Healthy</span>
           </div>
           <div className="text-xl font-bold text-emerald-400 mb-1">8/8 Jobs Passing</div>
           <div className="text-xs text-slate-400">Quality Gate • Snaps • Web • Release</div>
-        </div>
+        </motion.div>
 
-        <div className="glass-panel p-5">
+        <motion.div variants={itemVariants} className="glass-panel p-5 hover:border-purple-500/40 transition-colors">
           <div className="flex items-center justify-between text-xs text-slate-400 font-semibold mb-2">
             <span>PRODUCTION DOMAIN</span>
             <span className="text-emerald-400 flex items-center gap-1">● Live</span>
           </div>
           <div className="text-xl font-bold text-purple-400 mb-1">aswitchi.lorapok.tech</div>
           <div className="text-xs text-slate-400">HTTPS Enforced • Fast Global CDN</div>
-        </div>
+        </motion.div>
 
-        <div className="glass-panel p-5">
+        <motion.div variants={itemVariants} className="glass-panel p-5 hover:border-amber-500/40 transition-colors">
           <div className="flex items-center justify-between text-xs text-slate-400 font-semibold mb-2">
             <span>MEMORY FOOTPRINT</span>
             <span className="text-emerald-400 flex items-center gap-1">● Optimized</span>
           </div>
           <div className="text-xl font-bold text-amber-400 mb-1">&lt; 45 MB RAM</div>
           <div className="text-xs text-slate-400">GTK3 Native • Zero Electron Bloat</div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Snap Store Channel Status */}
-      <div className="glass-panel p-6">
+      <motion.div variants={itemVariants} className="glass-panel p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-lg font-bold text-white">Snap Store Release Channel Matrix</h2>
@@ -112,7 +133,7 @@ export default function Overview() {
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
