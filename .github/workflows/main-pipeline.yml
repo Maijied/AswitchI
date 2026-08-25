@@ -213,6 +213,8 @@ jobs:
             if [ -f "$snap_file" ]; then
               echo "━━━ Uploading to Revision Pool: ${snap_file} ━━━"
               snapcraft upload "$snap_file" || echo "⚠️ Upload completed or queued for revision assignment: ${snap_file}"
+              echo "━━━ Forcing Store Metadata Update (URLs, Description, Icon) ━━━"
+              snapcraft upload-metadata "$snap_file" || echo "⚠️ Metadata update skipped or failed: ${snap_file}"
             fi
           done
 
