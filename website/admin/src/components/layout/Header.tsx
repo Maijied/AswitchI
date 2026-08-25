@@ -1,12 +1,15 @@
 import React from "react";
 import { auth } from "../../lib/firebase";
-import { LogOut, ShieldCheck, ArrowLeft } from "lucide-react";
+import { LogOut, ShieldCheck, ArrowLeft, ExternalLink } from "lucide-react";
+import { getAdminRole } from "../../lib/admin-config";
 
 interface HeaderProps {
   user: any;
 }
 
 export default function Header({ user }: HeaderProps) {
+  const role = getAdminRole(user?.email);
+
   return (
     <header className="glass-panel rounded-none rounded-b-2xl border-t-0 px-6 py-3.5 flex items-center justify-between">
       <div className="flex items-center gap-3">
@@ -20,6 +23,16 @@ export default function Header({ user }: HeaderProps) {
       </div>
 
       <div className="flex items-center gap-4">
+        <a
+          href="../"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hidden md:inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-cyan-400 transition-colors px-2.5 py-1 rounded-lg bg-white/5 border border-white/10"
+        >
+          <span>Live Site</span>
+          <ExternalLink size={12} />
+        </a>
+
         <div className="flex items-center gap-2.5">
           <img
             src={user?.photoURL || "../assets/icon.png"}
@@ -27,8 +40,11 @@ export default function Header({ user }: HeaderProps) {
             className="w-7 h-7 rounded-full border border-cyan-400/50 object-cover"
           />
           <div className="hidden sm:block text-left">
-            <div className="text-xs font-bold text-white leading-none mb-0.5">
-              {user?.displayName || "Master Admin"}
+            <div className="text-xs font-bold text-white leading-none mb-1 flex items-center gap-1.5">
+              <span>{user?.displayName || "Master Admin"}</span>
+              <span className="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 font-normal">
+                {role}
+              </span>
             </div>
             <div className="text-[10px] text-slate-400 leading-none font-mono">
               {user?.email || "mdshuvo40@gmail.com"}
