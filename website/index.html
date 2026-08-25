@@ -467,5 +467,61 @@
     <div id="toast-container" class="toast-container"></div>
 
     <script src="script.js"></script>
-</body>
-</html>
+
+    <!-- Cookie Consent System -->
+    <div id="cookie-banner" class="fixed bottom-0 left-0 right-0 z-[100] transform translate-y-full transition-transform duration-500 ease-out p-4 md:p-6 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+        <div class="max-w-6xl mx-auto bg-[#0A0D15]/95 backdrop-blur-xl border border-white/10 rounded-2xl p-5 md:p-6 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 overflow-hidden relative">
+            <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-transparent pointer-events-none"></div>
+            
+            <div class="relative z-10 flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                    <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    <h3 class="text-white font-bold text-lg">We value your privacy</h3>
+                </div>
+                <p class="text-sm text-slate-400 leading-relaxed max-w-3xl">
+                    Lorapok Labs uses essential cookies to ensure the basic functionality of the website (like Mission Control clearances) and analytics cookies to understand traffic metrics. You can manage your preferences or accept all standard cookies.
+                </p>
+            </div>
+            
+            <div class="relative z-10 flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+                <button onclick="acceptCookies(false)" class="px-5 py-2.5 w-full sm:w-auto text-sm font-semibold text-slate-300 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-colors">
+                    Essential Only
+                </button>
+                <button onclick="acceptCookies(true)" class="px-6 py-2.5 w-full sm:w-auto text-sm font-bold text-black bg-gradient-to-r from-cyan-400 to-emerald-400 hover:from-cyan-300 hover:to-emerald-300 rounded-xl transition-colors shadow-[0_0_15px_rgba(0,242,254,0.3)] hover:shadow-[0_0_20px_rgba(0,242,254,0.5)]">
+                    Accept All
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cookie Consent Logic
+        function initCookieConsent() {
+            const consent = localStorage.getItem('aswitchi_cookie_consent');
+            if (!consent) {
+                // Wait a brief moment before showing to allow initial animations
+                setTimeout(() => {
+                    const banner = document.getElementById('cookie-banner');
+                    banner.classList.remove('translate-y-full');
+                }, 1500);
+            } else {
+                // If they accepted analytics, we could trigger GA4 initialization here if deferred
+                console.log("Cookie consent state:", consent);
+            }
+        }
+
+        function acceptCookies(allowAnalytics) {
+            localStorage.setItem('aswitchi_cookie_consent', allowAnalytics ? 'all' : 'essential');
+            const banner = document.getElementById('cookie-banner');
+            banner.classList.add('translate-y-full');
+            
+            if (allowAnalytics) {
+                // Dynamically load/enable analytics if deferred
+                console.log("Analytics enabled by user");
+            }
+        }
+
+        // Initialize on DOM load
+        document.addEventListener('DOMContentLoaded', initCookieConsent);
+    </script>
+</body>\n</html>
