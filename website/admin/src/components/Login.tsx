@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { auth, googleProvider } from "../lib/firebase";
 import {
   signInWithPopup,
@@ -9,13 +10,128 @@ import {
   signInWithEmailLink
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { ShieldCheck, Key, ArrowLeft, AlertCircle, CheckCircle2, Loader2, ExternalLink } from "lucide-react";
+import { ShieldCheck, Key, ArrowLeft, AlertCircle, CheckCircle2, Loader2, ExternalLink, Zap, Sparkles } from "lucide-react";
+
+/**
+ * Animated Interactive Header: A [ SWITCH ] I
+ * Features dynamic neon power rails, interactive toggling, and Framer Motion spring physics.
+ */
+function ASwitchHeader({ isSwitchOn, onToggle }: { isSwitchOn: boolean; onToggle: () => void }) {
+  return (
+    <div className="flex flex-col items-center justify-center mb-7 select-none">
+      {/* Brand typographic switcher row */}
+      <div className="relative flex items-center justify-center gap-4 px-6 py-3 rounded-2xl bg-black/40 border border-white/10 shadow-2xl backdrop-blur-xl group">
+        {/* Left Letter: A */}
+        <motion.div
+          animate={{
+            color: isSwitchOn ? "#00f2fe" : "#94a3b8",
+            textShadow: isSwitchOn
+              ? "0 0 20px rgba(0, 242, 254, 0.8), 0 0 40px rgba(0, 242, 254, 0.4)"
+              : "0 0 0px transparent",
+            scale: isSwitchOn ? 1.05 : 0.95
+          }}
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
+          className="text-3xl sm:text-4xl font-black font-mono tracking-tighter cursor-pointer"
+          onClick={onToggle}
+          title="A: Autonomous Systems"
+        >
+          A
+        </motion.div>
+
+        {/* Central Power Rail & Interactive Toggle Switch */}
+        <div className="flex items-center gap-2 relative">
+          {/* Animated left power rail */}
+          <motion.div
+            animate={{
+              opacity: isSwitchOn ? 1 : 0.2,
+              scaleX: isSwitchOn ? 1 : 0.8,
+              backgroundColor: isSwitchOn ? "#00f2fe" : "#475569"
+            }}
+            className="w-5 sm:w-7 h-[2px] rounded-full shadow-[0_0_8px_#00f2fe]"
+          />
+
+          {/* Physical Switch Housing */}
+          <motion.div
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.92 }}
+            onClick={onToggle}
+            className={`w-14 sm:w-16 h-8 sm:h-9 rounded-full p-1 cursor-pointer transition-colors duration-300 relative flex items-center ${
+              isSwitchOn
+                ? "bg-gradient-to-r from-cyan-500/30 via-purple-500/40 to-cyan-500/30 border border-cyan-400/60 shadow-[0_0_20px_rgba(0,242,254,0.4)]"
+                : "bg-slate-900 border border-slate-700 shadow-inner"
+            }`}
+            title="Click to toggle AswitchI system state"
+          >
+            {/* Switch Knob / Slider */}
+            <motion.div
+              layout
+              transition={{ type: "spring", stiffness: 600, damping: 30 }}
+              className={`w-6 sm:w-7 h-6 sm:h-7 rounded-full flex items-center justify-center shadow-lg relative ${
+                isSwitchOn
+                  ? "ml-auto bg-gradient-to-tr from-cyan-400 to-purple-500 shadow-[0_0_15px_#00f2fe]"
+                  : "mr-auto bg-slate-600 shadow-none"
+              }`}
+            >
+              {isSwitchOn ? (
+                <Zap size={12} className="text-black fill-black animate-pulse" />
+              ) : (
+                <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+              )}
+            </motion.div>
+          </motion.div>
+
+          {/* Animated right power rail */}
+          <motion.div
+            animate={{
+              opacity: isSwitchOn ? 1 : 0.2,
+              scaleX: isSwitchOn ? 1 : 0.8,
+              backgroundColor: isSwitchOn ? "#a855f7" : "#475569"
+            }}
+            className="w-5 sm:w-7 h-[2px] rounded-full shadow-[0_0_8px_#a855f7]"
+          />
+        </div>
+
+        {/* Right Letter: I */}
+        <motion.div
+          animate={{
+            color: isSwitchOn ? "#a855f7" : "#64748b",
+            textShadow: isSwitchOn
+              ? "0 0 20px rgba(168, 85, 247, 0.8), 0 0 40px rgba(168, 85, 247, 0.4)"
+              : "0 0 0px transparent",
+            scale: isSwitchOn ? 1.05 : 0.95
+          }}
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
+          className="text-3xl sm:text-4xl font-black font-mono tracking-tighter cursor-pointer"
+          onClick={onToggle}
+          title="I: Intelligence & AI Engine"
+        >
+          I
+        </motion.div>
+      </div>
+
+      {/* Dynamic Subtitle Status Pill */}
+      <motion.div
+        animate={{
+          opacity: 1,
+          y: 0
+        }}
+        className="mt-3 flex items-center gap-1.5 text-[10px] font-mono tracking-widest uppercase font-semibold"
+      >
+        <span className={`w-1.5 h-1.5 rounded-full ${isSwitchOn ? "bg-cyan-400 animate-ping" : "bg-slate-500"}`} />
+        <span className={isSwitchOn ? "text-cyan-300" : "text-slate-500"}>
+          {isSwitchOn ? "AswitchI Core: Online // All Systems Engaged" : "AswitchI Core: Standby // Ready to Initialize"}
+        </span>
+      </motion.div>
+    </div>
+  );
+}
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [vaultPin, setVaultPin] = useState("");
   const [usePinMode, setUsePinMode] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isSwitchOn, setIsSwitchOn] = useState(true);
   const [unauthorizedDomain, setUnauthorizedDomain] = useState(false);
   const [alert, setAlert] = useState<{ type: "error" | "success"; message: string } | null>(null);
   const navigate = useNavigate();
@@ -127,15 +243,11 @@ export default function Login() {
       <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
 
       <div className="glass-panel max-w-md w-full p-8 relative z-10">
-        <div className="text-center mb-8">
-          <a href="../" className="inline-flex items-center gap-2 mb-4 group text-decoration-none">
-            <img src="../assets/icon_animated.svg" alt="AswitchI Logo" className="w-10 h-10 group-hover:scale-105 transition-transform" />
-            <div className="text-left">
-              <div className="text-lg font-bold text-white tracking-tight">AswitchI</div>
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-cyan-400">Mission Control</div>
-            </div>
-          </a>
-          <h1 className="text-2xl font-bold text-white mb-1.5">Admin Authentication</h1>
+        {/* Animated Brand Switcher Header: A [ SWITCH ] I */}
+        <ASwitchHeader isSwitchOn={isSwitchOn} onToggle={() => setIsSwitchOn(!isSwitchOn)} />
+
+        <div className="text-center mb-6">
+          <h1 className="text-2xl font-bold text-white mb-1.5">Mission Control Login</h1>
           <p className="text-xs text-slate-400">
             Clearance restricted to Lorapok Labs Master Admin (<strong>mdshuvo40@gmail.com</strong>).
           </p>
