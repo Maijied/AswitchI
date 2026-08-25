@@ -192,7 +192,7 @@ jobs:
       - name: 🔧 Install Snapcraft
         run: sudo snap install --classic snapcraft
 
-      - name: 🚀 Publish Snaps to Canonical Store
+      - name: 📦 Register Unreleased Snaps in Snap Store Pool
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
         run: |
@@ -201,18 +201,27 @@ jobs:
             exit 0
           fi
           
-          CHANNEL="edge"
-          if [ "${{ github.event_name }}" = "release" ]; then
-            CHANNEL="stable"
-          fi
-          
-          echo "🚀 Publishing built snaps to channel: ${CHANNEL}"
+          echo "=================================================================="
+          echo "🔒 ADMIN-CONTROLLED RELEASE POLICY ACTIVE"
+          echo "Snaps are uploaded to register new revision numbers in the store."
+          echo "NO channel (stable/candidate/beta/edge) will be auto-published."
+          echo "Publishing & Promotion must be triggered from Mission Control:"
+          echo "https://aswitchi.lorapok.tech/admin/#/dashboard/deployments"
+          echo "=================================================================="
+
           for snap_file in snaps/*/*.snap; do
             if [ -f "$snap_file" ]; then
-              echo "━━━ Uploading: ${snap_file} ━━━"
-              snapcraft upload "$snap_file" --release "$CHANNEL" || echo "⚠️ Upload completed or queued for review: ${snap_file}"
+              echo "━━━ Uploading to Revision Pool: ${snap_file} ━━━"
+              snapcraft upload "$snap_file" || echo "⚠️ Upload completed or queued for revision assignment: ${snap_file}"
             fi
           done
+
+      - name: 📋 Release Gating Notice
+        run: |
+          echo "### 🔒 Admin Release Gating Policy" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: Staged as Unreleased Store Revision" >> $GITHUB_STEP_SUMMARY
+          echo "- **Action Required**: Release to \`stable\`, \`candidate\`, \`beta\`, or \`edge\` via [Mission Control Admin Panel](https://aswitchi.lorapok.tech/admin/#/dashboard/deployments)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Authorized Admin**: \`mdshuvo40@gmail.com\`" >> $GITHUB_STEP_SUMMARY
 
   # ==========================================================
   # JOB 6: Aggregate & Publish Release
