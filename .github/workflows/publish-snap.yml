@@ -25,7 +25,7 @@ jobs:
           workflow: main-pipeline.yml
           name: aswitchi-amd64-snap
           path: snaps/amd64/
-          
+
       - name: 📥 Download Latest arm64 Snap Build
         uses: dawidd6/action-download-artifact@v3
         with:
@@ -33,14 +33,29 @@ jobs:
           name: aswitchi-arm64-snap
           path: snaps/arm64/
 
+      - name: 📋 List Downloaded Snap Artifacts
+        run: |
+          echo "📦 Downloaded snap files:"
+          find snaps/ -name "*.snap" -type f
+          echo ""
+          echo "Total snaps: $(find snaps/ -name '*.snap' -type f | wc -l)"
+
+      - name: 🔧 Install Snapcraft
+        run: sudo snap install --classic snapcraft
+
       - name: 🚀 Publish to Canonical Snap Store
-        uses: snapcore/action-publish@v1
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
-        with:
-          store_login: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
-          snap: snaps/*/*.snap
-          release: ${{ github.event.inputs.channel }}
+        run: |
+          CHANNEL="${{ github.event.inputs.channel }}"
+          echo "🚀 Publishing all snaps to '${CHANNEL}' channel..."
           
+          for snap_file in snaps/*/*.snap; do
+            echo ""
+            echo "━━━ Uploading: ${snap_file} ━━━"
+            snapcraft upload "${snap_file}" --release "${CHANNEL}"
+            echo "✅ ${snap_file} → ${CHANNEL}"
+          done
+
       - name: ✅ Summary
         run: echo "Successfully pushed to Snap Store on the '${{ github.event.inputs.channel }}' channel!"
