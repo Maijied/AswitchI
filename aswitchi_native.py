@@ -197,8 +197,8 @@ class AswitchINativeApp(Gtk.ApplicationWindow):
 
     def open_web_ai(self, item):
         self.current_web_item = item
-        name = item.get("name", "Web AI")
-        url = item.get("url", "https://google.com")
+        name = item.get("name", "AswitchI Web AI")
+        url = item.get("url", "https://aswitchi.lorapok.tech")
         self.lbl_web_title.set_text(name)
         self.web_view.load_uri(url)
         self.web_box.show_all()

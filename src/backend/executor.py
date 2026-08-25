@@ -37,8 +37,8 @@ def launch_cli(agent, project_path=None):
             return {"success": False, "error": str(e2)}
 
 def launch_web(web_ai):
-    url = web_ai.get("url", "")
-    name = web_ai.get("name", "Web AI")
+    url = web_ai.get("url") or "https://aswitchi.lorapok.tech"
+    name = web_ai.get("name", "AswitchI Web AI")
     app_id = web_ai.get("id", "web")
     app_class = f"aswitchi-{app_id}"
     
