@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { fetchSnapStoreChannels, fetchWorkflowRuns, type SnapChannelRelease, type WorkflowRun } from "../../lib/api";
 import { ExternalLink, CheckCircle2, AlertTriangle, ShieldCheck, Activity, Cpu, HardDrive } from "lucide-react";
 
@@ -17,7 +17,7 @@ export default function Overview() {
       .finally(() => setLoading(false));
   }, []);
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -27,9 +27,9 @@ export default function Overview() {
     }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 15 },
-    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+    show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
   };
 
   return (
