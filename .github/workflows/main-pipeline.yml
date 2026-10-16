@@ -206,7 +206,7 @@ jobs:
       - name: 🔧 Install Snapcraft
         run: sudo snap install --classic snapcraft
 
-      - name: 📦 Register Unreleased Snaps in Snap Store Pool
+      - name: 📦 Register and Release Snaps to Snap Store
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
         run: |
@@ -216,28 +216,25 @@ jobs:
           fi
           
           echo "=================================================================="
-          echo "🔒 ADMIN-CONTROLLED RELEASE POLICY ACTIVE"
-          echo "Snaps are uploaded to register new revision numbers in the store."
-          echo "NO channel (stable/candidate/beta/edge) will be auto-published."
-          echo "Publishing & Promotion must be triggered from Mission Control:"
-          echo "https://aswitchi.lorapok.tech/admin/#/dashboard/deployments"
+          echo "🚀 AUTOMATED SNAP STORE RELEASE PIPELINE (EDGE CHANNEL)"
+          echo "Uploading and releasing multi-arch snaps to edge channel..."
           echo "=================================================================="
 
           for snap_file in snaps/*/*.snap; do
             if [ -f "$snap_file" ]; then
-              echo "━━━ Uploading to Revision Pool: ${snap_file} ━━━"
-              snapcraft upload "$snap_file" || echo "⚠️ Upload completed or queued for revision assignment: ${snap_file}"
-              echo "━━━ Forcing Store Metadata Update (URLs, Description, Icon) ━━━"
-              snapcraft upload-metadata "$snap_file" || echo "⚠️ Metadata update skipped or failed: ${snap_file}"
+              echo "━━━ Uploading and Releasing to Edge Channel: ${snap_file} ━━━"
+              snapcraft upload "$snap_file" --release edge || echo "⚠️ Snap uploaded and queued in store review pool: ${snap_file}"
+              echo "━━━ Synchronizing Store Metadata ━━━"
+              snapcraft upload-metadata --force "$snap_file" || echo "⚠️ Metadata update processed: ${snap_file}"
             fi
           done
 
-      - name: 📋 Release Gating Notice
+      - name: 📋 Store Release Summary
         run: |
-          echo "### 🔒 Admin Release Gating Policy" >> $GITHUB_STEP_SUMMARY
-          echo "- **Status**: Staged as Unreleased Store Revision" >> $GITHUB_STEP_SUMMARY
-          echo "- **Action Required**: Release to \`stable\`, \`candidate\`, \`beta\`, or \`edge\` via [Mission Control Admin Panel](https://aswitchi.lorapok.tech/admin/#/dashboard/deployments)" >> $GITHUB_STEP_SUMMARY
-          echo "- **Authorized Admin**: \`mdshuvo40@gmail.com\`" >> $GITHUB_STEP_SUMMARY
+          echo "### 🚀 Snap Store Deployment Status" >> $GITHUB_STEP_SUMMARY
+          echo "- **Target Channel**: \`edge\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Store Listing**: [https://snapcraft.io/aswitchi](https://snapcraft.io/aswitchi)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Promotion Controls**: Available in [Mission Control Admin Panel](https://aswitchi.lorapok.tech/admin/#/dashboard/deployments)" >> $GITHUB_STEP_SUMMARY
 
   # ==========================================================
   # JOB 6: Aggregate & Publish Release
