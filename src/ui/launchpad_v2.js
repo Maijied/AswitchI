@@ -13,6 +13,8 @@ let state = {
   selectedAppForContext: null,
   selectedAiForProj: null,
   isSwiping: false,
+  isDragging: false,
+  dragJustFinished: false,
   launchingAppId: null,
   initialLoaded: false
 };
@@ -79,6 +81,11 @@ window.onNativeDataReceived = function(rawJson) {
     state.appVersion = data.appVersion || "1.0.0";
     const verBadge = document.getElementById("about-version");
     if (verBadge) verBadge.innerText = "v" + state.appVersion;
+
+    // Persist to local frontend cache for instant cold boot
+    try {
+      localStorage.setItem('aswitchi_frontend_cache_v2', JSON.stringify(data));
+    } catch (e) {}
     
     if (!state.updateChecked) {
       state.updateChecked = true;
@@ -293,6 +300,7 @@ function createAppElement(app) {
   `;
 
   item.onclick = (e) => {
+    if (state.dragJustFinished) return;
     triggerAppLaunch(app, item.querySelector('.icon-box'));
   };
 
@@ -387,11 +395,11 @@ function renderDock() {
 
 function goToPage(pageIndex) {
   if (pageIndex < 0) pageIndex = 0;
-  if (pageIndex >= state.pageCount) pageIndex = state.pageCount - 1;
+  if (pageIndex >= state.pageCount) pageIndex = Math.max(0, state.pageCount - 1);
   state.currentPage = pageIndex;
 
   const slider = document.getElementById('pages-slider');
-  const shiftPct = pageIndex * (100 / state.pageCount);
+  const shiftPct = state.pageCount > 0 ? pageIndex * (100 / state.pageCount) : 0;
   slider.style.transform = `translateX(-${shiftPct}%)`;
 
   const dots = document.querySelectorAll('#pagination-dots .dot');
@@ -399,6 +407,21 @@ function goToPage(pageIndex) {
     if (idx === pageIndex) d.classList.add('active');
     else d.classList.remove('active');
   });
+
+  // Dynamic Navigation Chevrons
+  const prevBtn = document.getElementById('nav-prev');
+  const nextBtn = document.getElementById('nav-next');
+  if (prevBtn && nextBtn) {
+    if (state.pageCount <= 1) {
+      prevBtn.classList.add('hidden');
+      nextBtn.classList.add('hidden');
+    } else {
+      prevBtn.classList.remove('hidden');
+      nextBtn.classList.remove('hidden');
+      prevBtn.disabled = pageIndex === 0;
+      nextBtn.disabled = pageIndex === state.pageCount - 1;
+    }
+  }
 }
 
 function triggerAppLaunch(app, iconBoxEl = null) {
@@ -515,22 +538,130 @@ function setupEvents() {
     });
   });
 
-  // 2-Finger Horizontal Scroll Swipe Detection
-  window.addEventListener('wheel', (e) => {
-    if (state.isSwiping) return;
+  // Navigation Chevrons
+  const prevBtn = document.getElementById('nav-prev');
+  const nextBtn = document.getElementById('nav-next');
+  if (prevBtn) {
+    prevBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      goToPage(state.currentPage - 1);
+    });
+  }
+  if (nextBtn) {
+    nextBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      goToPage(state.currentPage + 1);
+    });
+  }
 
-    if (Math.abs(e.deltaX) > 22 && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-      if (e.deltaX > 22 && state.currentPage < state.pageCount - 1) {
+  // Viewport Wheel & Trackpad Navigation (Fixes standard Ubuntu mouse wheel deltaY)
+  const viewport = document.getElementById('pages-viewport');
+  const slider = document.getElementById('pages-slider');
+
+  viewport.addEventListener('wheel', (e) => {
+    if (state.isSwiping || state.isDragging) return;
+
+    // Detect both horizontal trackpad swipes and standard vertical mouse wheel scrolls
+    const isHorizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+    const primaryDelta = isHorizontal ? e.deltaX : e.deltaY;
+    const threshold = isHorizontal ? 18 : 22;
+
+    if (Math.abs(primaryDelta) > threshold) {
+      if (primaryDelta > threshold && state.currentPage < state.pageCount - 1) {
         state.isSwiping = true;
         goToPage(state.currentPage + 1);
-        setTimeout(() => { state.isSwiping = false; }, 380);
-      } else if (e.deltaX < -22 && state.currentPage > 0) {
+        setTimeout(() => { state.isSwiping = false; }, 260);
+      } else if (primaryDelta < -threshold && state.currentPage > 0) {
         state.isSwiping = true;
         goToPage(state.currentPage - 1);
-        setTimeout(() => { state.isSwiping = false; }, 380);
+        setTimeout(() => { state.isSwiping = false; }, 260);
       }
     }
   }, { passive: true });
+
+  // Unified Mouse Drag / Touch Swipe Navigation
+  let startX = 0;
+  let startY = 0;
+  let currentTranslatePct = 0;
+  let dragDistance = 0;
+  let activePointerId = null;
+
+  viewport.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0) return; // Only primary mouse button
+    if (e.target.closest('.page-nav-btn')) return;
+
+    state.isDragging = true;
+    state.dragJustFinished = false;
+    startX = e.clientX;
+    startY = e.clientY;
+    dragDistance = 0;
+    activePointerId = e.pointerId;
+
+    try {
+      viewport.setPointerCapture(e.pointerId);
+    } catch (err) {}
+
+    currentTranslatePct = state.pageCount > 0 ? state.currentPage * (100 / state.pageCount) : 0;
+  });
+
+  viewport.addEventListener('pointermove', (e) => {
+    if (!state.isDragging || e.pointerId !== activePointerId) return;
+
+    const dx = e.clientX - startX;
+    dragDistance = dx;
+
+    if (Math.abs(dx) > 6) {
+      viewport.classList.add('dragging');
+      state.dragJustFinished = true;
+    }
+
+    if (state.pageCount <= 1) return;
+
+    const viewportWidth = viewport.clientWidth || 980;
+    let dragOffsetPct = (dx / viewportWidth) * (100 / state.pageCount);
+
+    // Rubber-band resistance at boundaries
+    if ((state.currentPage === 0 && dx > 0) || (state.currentPage === state.pageCount - 1 && dx < 0)) {
+      dragOffsetPct *= 0.22;
+    }
+
+    const totalTranslatePct = -(currentTranslatePct - dragOffsetPct);
+    slider.style.transform = `translateX(${totalTranslatePct}%)`;
+  });
+
+  function endPointerDrag(e) {
+    if (!state.isDragging || (activePointerId !== null && e.pointerId !== activePointerId)) return;
+
+    state.isDragging = false;
+    viewport.classList.remove('dragging');
+
+    try {
+      if (activePointerId !== null) {
+        viewport.releasePointerCapture(activePointerId);
+      }
+    } catch (err) {}
+    activePointerId = null;
+
+    if (Math.abs(dragDistance) > 45 && state.pageCount > 1) {
+      state.dragJustFinished = true;
+      if (dragDistance < -45 && state.currentPage < state.pageCount - 1) {
+        goToPage(state.currentPage + 1);
+      } else if (dragDistance > 45 && state.currentPage > 0) {
+        goToPage(state.currentPage - 1);
+      } else {
+        goToPage(state.currentPage);
+      }
+    } else {
+      goToPage(state.currentPage);
+    }
+
+    setTimeout(() => {
+      state.dragJustFinished = false;
+    }, 140);
+  }
+
+  viewport.addEventListener('pointerup', endPointerDrag);
+  viewport.addEventListener('pointercancel', endPointerDrag);
 
   // Search input
   const search = document.getElementById('search-input');
@@ -695,6 +826,16 @@ function setupEvents() {
 
 document.addEventListener('DOMContentLoaded', () => {
   setupEvents();
+  // Instant Cold Boot: Hydrate from frontend cache immediately
+  try {
+    const cached = localStorage.getItem('aswitchi_frontend_cache_v2');
+    if (cached) {
+      const cachedData = JSON.parse(cached);
+      window.onNativeDataReceived(cachedData);
+    }
+  } catch (e) {
+    console.warn("Could not load frontend cache:", e);
+  }
   callNative('sync');
 });
 

@@ -72,11 +72,21 @@
       </div>
     </header>
 
-    <!-- Multi-Page Carousel Viewport (2-Finger Horizontal Scroll Supported) -->
+    <!-- Multi-Page Carousel Viewport (Mouse Drag & Wheel Navigation Supported) -->
     <main class="pages-viewport" id="pages-viewport">
+      <button class="page-nav-btn nav-prev" id="nav-prev" aria-label="Previous Page" title="Previous Page">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
       <div class="pages-slider" id="pages-slider">
         <!-- Dynamically injected isolated pages -->
       </div>
+      <button class="page-nav-btn nav-next" id="nav-next" aria-label="Next Page" title="Next Page">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
     </main>
 
     <!-- Pagination Navigation Dots (• •) -->

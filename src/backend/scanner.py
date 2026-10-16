@@ -4,6 +4,7 @@ import glob
 import subprocess
 from pathlib import Path
 from .config import get_all_web_ais, get_config
+from .cache_manager import load_cached_state, save_cached_state, clear_cache
 
 GLOBAL_PROCESS_EXCLUDES = [
     r"chrome-native-host",
@@ -462,17 +463,57 @@ _CACHE_PROJECTS = None
 _CACHE_PROJECTS_TIME = 0
 _LAST_RUNNING_STATE = {}
 
-def invalidate_cache():
+def invalidate_cache(clear_disk=False):
     global _CACHE_DESKTOP, _CACHE_CLI, _CACHE_PROJECTS, _CACHE_PROJECTS_TIME
     _CACHE_DESKTOP = None
     _CACHE_CLI = None
     _CACHE_PROJECTS = None
     _CACHE_PROJECTS_TIME = 0
+    if clear_disk:
+        clear_cache()
 
 def scan_all(force_refresh=False):
     global _CACHE_DESKTOP, _CACHE_CLI, _CACHE_PROJECTS, _CACHE_PROJECTS_TIME, _LAST_RUNNING_STATE
     cfg = get_config()
     proc = get_running_process_output()
+
+    if not force_refresh and _CACHE_DESKTOP is None:
+        cached = load_cached_state()
+        if cached and "desktopApps" in cached and "cliAgents" in cached:
+            _CACHE_DESKTOP = cached.get("desktopApps", [])
+            _CACHE_CLI = cached.get("cliAgents", [])
+            _CACHE_PROJECTS = cached.get("projects", [])
+            _CACHE_PROJECTS_TIME = time.time()
+            for app in _CACHE_DESKTOP:
+                for pat in KNOWN_DESKTOP_PATTERNS:
+                    if pat["id"] == app["id"]:
+                        app["running"] = is_pattern_running(pat["match"], proc, pat.get("exclude"))
+                        break
+            for agent in _CACHE_CLI:
+                for ag in KNOWN_CLI_AGENTS:
+                    if ag["id"] == agent["id"]:
+                        agent["running"] = is_pattern_running(ag["match"], proc, ag.get("exclude"))
+                        break
+            web = get_all_web_ais()
+            dock_ids = cfg.get("dockItemIds", [])
+            _LAST_RUNNING_STATE = {
+                item["id"]: item.get("running", False)
+                for item in (_CACHE_DESKTOP + _CACHE_CLI)
+            }
+            return {
+                "desktopApps": _CACHE_DESKTOP,
+                "cliAgents": _CACHE_CLI,
+                "webAis": web,
+                "projects": _CACHE_PROJECTS or [],
+                "dockItemIds": dock_ids,
+                "summary": {
+                    "totalInstalledAIs": len(_CACHE_DESKTOP) + len(_CACHE_CLI),
+                    "desktopCount": len(_CACHE_DESKTOP),
+                    "cliCount": len(_CACHE_CLI),
+                    "webCount": len(web),
+                    "projectCount": len(_CACHE_PROJECTS or [])
+                }
+            }
 
     if force_refresh or _CACHE_DESKTOP is None:
         _CACHE_DESKTOP = scan_desktop_applications(proc)
@@ -505,7 +546,7 @@ def scan_all(force_refresh=False):
         for item in (_CACHE_DESKTOP + _CACHE_CLI)
     }
 
-    return {
+    result = {
         "desktopApps": _CACHE_DESKTOP,
         "cliAgents": _CACHE_CLI,
         "webAis": web,
@@ -519,6 +560,8 @@ def scan_all(force_refresh=False):
             "projectCount": len(_CACHE_PROJECTS)
         }
     }
+    save_cached_state(result)
+    return result
 
 def check_running_status_changed():
     """
