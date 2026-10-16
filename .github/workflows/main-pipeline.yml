@@ -16,7 +16,7 @@ permissions:
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref_name }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 env:
   APP_NAME: "aswitchi"
@@ -31,6 +31,7 @@ jobs:
   quality-security-gate:
     name: 🛡️ Quality & Security Gate
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: 📥 Check out repository
         uses: actions/checkout@v4
@@ -133,6 +134,7 @@ jobs:
     name: 🌐 Build & Deploy Website
     needs: quality-security-gate
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: 📥 Check out repository
         uses: actions/checkout@v4
@@ -175,6 +177,7 @@ jobs:
     name: 📦 Publish to Snap Store
     needs: [quality-security-gate, build-desktop]
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     if: (github.ref == 'refs/heads/main' && github.event_name != 'pull_request') || github.event_name == 'release'
     steps:
       - name: 📥 Download amd64 Snap
