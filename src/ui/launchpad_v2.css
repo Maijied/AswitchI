@@ -113,6 +113,42 @@ body, html {
   overflow: hidden;
 }
 
+/* Top Window Drag Bar */
+.window-drag-bar {
+  width: 100%;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  position: absolute;
+  top: 3px;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.window-drag-bar:active {
+  cursor: grabbing;
+}
+
+.window-drag-bar .drag-pill {
+  width: 48px;
+  height: 4px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.22);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.window-drag-bar:hover .drag-pill {
+  background: rgba(255, 255, 255, 0.65);
+  width: 68px;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.45);
+}
+
 /* Top Header Bar */
 .launchpad-header {
   width: 100%;
@@ -124,6 +160,20 @@ body, html {
   height: 44px;
   z-index: 10;
   gap: 12px;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.launchpad-header:active {
+  cursor: grabbing;
+}
+
+.launchpad-header button,
+.launchpad-header input,
+.launchpad-header .category-pills,
+.launchpad-header .window-controls {
+  cursor: default;
 }
 
 /* Category Filter Pills (Apple Segmented Style) */
@@ -263,7 +313,13 @@ body, html {
 }
 
 .ctrl-btn.btn-min:hover {
-  background: rgba(234, 179, 8, 0.8);
+  background: rgba(234, 179, 8, 0.85);
+  color: #000;
+  border-color: transparent;
+}
+
+.ctrl-btn.btn-max:hover {
+  background: rgba(34, 197, 94, 0.85);
   color: #000;
   border-color: transparent;
 }

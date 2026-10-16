@@ -26,8 +26,13 @@
   <!-- Fullscreen macOS Launchpad Backdrop -->
   <div class="launchpad-container" id="launchpad">
 
+    <!-- Top Window Drag Handle & Title Bar -->
+    <div class="window-drag-bar" id="window-drag-bar" title="Drag to move AswitchI">
+      <div class="drag-pill"></div>
+    </div>
+
     <!-- Top Status / Search Header -->
-    <header class="launchpad-header">
+    <header class="launchpad-header" id="launchpad-header">
       
       <!-- Category Filter Pills (Apple Segmented Style) -->
       <div class="category-pills" id="category-pills">
@@ -64,9 +69,10 @@
           <span>Add Web AI</span>
         </button>
 
-        <!-- Window Controls: Minimize and Close -->
+        <!-- Window Controls: Minimize, Maximize, and Close -->
         <div class="window-controls">
           <button id="btn-minimize" class="ctrl-btn btn-min" title="Minimize Window">–</button>
+          <button id="btn-maximize" class="ctrl-btn btn-max" title="Maximize / Restore Window">□</button>
           <button id="btn-close" class="ctrl-btn btn-close" title="Close AswitchI (Esc)">&times;</button>
         </div>
       </div>

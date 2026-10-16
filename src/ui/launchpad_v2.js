@@ -671,10 +671,48 @@ function setupEvents() {
     renderPages();
   });
 
-  // Window Controls: Minimize & Close
+  // Window Drag & Movement Handling
+  function handleWindowDragStart(e) {
+    if (e.button !== 0) return; // Left mouse button only
+    // Skip if clicking an interactive element
+    if (e.target.closest('button, input, a, .cat-pill, .ctrl-btn, .modal-overlay, .app-item, .dock-item')) {
+      return;
+    }
+    callNative('startWindowDrag', {
+      button: e.button,
+      screenX: e.screenX,
+      screenY: e.screenY
+    });
+  }
+
+  const dragBar = document.getElementById('window-drag-bar');
+  if (dragBar) {
+    dragBar.addEventListener('mousedown', handleWindowDragStart);
+    dragBar.addEventListener('dblclick', () => {
+      callNative('toggleMaximize');
+    });
+  }
+
+  const header = document.getElementById('launchpad-header');
+  if (header) {
+    header.addEventListener('mousedown', handleWindowDragStart);
+    header.addEventListener('dblclick', (e) => {
+      if (e.target.closest('button, input, a, .cat-pill, .ctrl-btn')) return;
+      callNative('toggleMaximize');
+    });
+  }
+
+  // Window Controls: Minimize, Maximize & Close
   document.getElementById('btn-minimize').addEventListener('click', () => {
     callNative('minimizeWindow');
   });
+
+  const btnMax = document.getElementById('btn-maximize');
+  if (btnMax) {
+    btnMax.addEventListener('click', () => {
+      callNative('toggleMaximize');
+    });
+  }
 
   document.getElementById('btn-close').addEventListener('click', () => {
     callNative('closeWindow');

@@ -74,5 +74,23 @@ class TestCachingAndUX(unittest.TestCase):
         self.assertIn("deltaX", content)
         self.assertIn("state.dragJustFinished", content)
 
+    def test_window_movement_and_maximize_support(self):
+        html = Path("src/ui/launchpad.html").read_text(encoding="utf-8")
+        self.assertIn('id="window-drag-bar"', html)
+        self.assertIn('id="btn-maximize"', html)
+
+        css = Path("src/ui/launchpad_v2.css").read_text(encoding="utf-8")
+        self.assertIn(".window-drag-bar", css)
+        self.assertIn(".ctrl-btn.btn-max", css)
+
+        js = Path("src/ui/launchpad_v2.js").read_text(encoding="utf-8")
+        self.assertIn("startWindowDrag", js)
+        self.assertIn("toggleMaximize", js)
+
+        py = Path("aswitchi_native.py").read_text(encoding="utf-8")
+        self.assertIn("startWindowDrag", py)
+        self.assertIn("toggleMaximize", py)
+        self.assertIn("begin_move_drag", py)
+
 if __name__ == "__main__":
     unittest.main()

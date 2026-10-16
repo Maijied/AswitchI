@@ -121,6 +121,10 @@ class AswitchINativeApp(Gtk.ApplicationWindow):
         self.lp_webview.set_background_color(Gdk.RGBA(0, 0, 0, 0))
         self.lp_webview.connect("load-changed", self.on_lp_load_changed)
 
+        # Track GDK button press events for seamless Wayland/X11 window dragging
+        self.last_press_event = None
+        self.lp_webview.connect("button-press-event", self.on_lp_button_press)
+
         html_path = PROJECT_DIR / "src" / "ui" / "launchpad.html"
         self.lp_webview.load_uri(f"file://{html_path}")
         self.stack.add_named(self.lp_webview, "launchpad")
@@ -171,7 +175,10 @@ class AswitchINativeApp(Gtk.ApplicationWindow):
         self.btn_popout.connect("clicked", self.on_popout_clicked)
         self.inapp_bar.pack_end(self.btn_popout, False, False, 0)
 
-        self.web_box.pack_start(self.inapp_bar, False, False, 0)
+        self.inapp_bar_box = Gtk.EventBox()
+        self.inapp_bar_box.add(self.inapp_bar)
+        self.inapp_bar_box.connect("button-press-event", self.on_inapp_bar_button_press)
+        self.web_box.pack_start(self.inapp_bar_box, False, False, 0)
 
         # Persistent Data Manager for Cookies & Login
         profile_path = str(Path.home() / ".config" / "aswitchi" / "webai-profile")
@@ -396,6 +403,23 @@ class AswitchINativeApp(Gtk.ApplicationWindow):
         if event == WebKit2.LoadEvent.FINISHED:
             self.send_scan_data()
 
+    def on_lp_button_press(self, widget, event):
+        if event.type in (Gdk.EventType.BUTTON_PRESS, Gdk.EventType._2BUTTON_PRESS):
+            self.last_press_event = event
+        return False
+
+    def on_inapp_bar_button_press(self, widget, event):
+        if event.type == Gdk.EventType._2BUTTON_PRESS and event.button == 1:
+            if self.is_maximized():
+                self.unmaximize()
+            else:
+                self.maximize()
+            return True
+        elif event.type == Gdk.EventType.BUTTON_PRESS and event.button == 1:
+            self.begin_move_drag(event.button, int(event.x_root), int(event.y_root), event.time)
+            return True
+        return False
+
     def on_key_press(self, widget, event):
         if event.keyval == Gdk.KEY_Escape:
             if self.stack.get_visible_child_name() == "web_viewer":
@@ -482,6 +506,29 @@ class AswitchINativeApp(Gtk.ApplicationWindow):
             elif action == "stopApp":
                 executor.stop_process(msg.get("keyword"))
                 GLib.timeout_add(800, lambda: (self.send_scan_data(), False)[1])
+
+            elif action == "startWindowDrag":
+                button = 1
+                root_x = int(msg.get("screenX", 0))
+                root_y = int(msg.get("screenY", 0))
+                timestamp = Gtk.get_current_event_time()
+
+                if hasattr(self, "last_press_event") and self.last_press_event:
+                    button = self.last_press_event.button
+                    root_x = int(self.last_press_event.x_root)
+                    root_y = int(self.last_press_event.y_root)
+                    timestamp = self.last_press_event.time
+
+                try:
+                    self.begin_move_drag(button, root_x, root_y, timestamp)
+                except Exception as err:
+                    print("Notice: begin_move_drag error:", err)
+
+            elif action == "toggleMaximize":
+                if self.is_maximized():
+                    self.unmaximize()
+                else:
+                    self.maximize()
 
             elif action == "minimizeWindow":
                 self.iconify()
