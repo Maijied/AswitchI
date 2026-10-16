@@ -78,7 +78,141 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2.1">
+    
+    <!-- Critical Floating Cookie Consent Styles (Inline Fallback for Browser Cache Invalidation) -->
+    <style id="cookie-banner-critical-css">
+      .cookie-banner-wrapper {
+        position: fixed !important;
+        bottom: 24px !important;
+        left: 50% !important;
+        transform: translateX(-50%) translateY(140%) !important;
+        width: calc(100% - 32px) !important;
+        max-width: 900px !important;
+        z-index: 9999 !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease !important;
+      }
+      .cookie-banner-wrapper.visible {
+        transform: translateX(-50%) translateY(0) !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+      }
+      .cookie-banner-inner {
+        position: relative;
+        background: rgba(10, 16, 32, 0.92);
+        backdrop-filter: blur(32px) saturate(190%);
+        -webkit-backdrop-filter: blur(32px) saturate(190%);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 28px;
+        padding: 22px 28px;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 35px rgba(0, 242, 254, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 28px;
+        overflow: hidden;
+      }
+      .cookie-ambient-glow {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 10% 50%, rgba(0, 242, 254, 0.12), transparent 50%), radial-gradient(circle at 90% 50%, rgba(168, 85, 247, 0.08), transparent 50%);
+        pointer-events: none;
+      }
+      .cookie-content-col {
+        position: relative;
+        z-index: 1;
+        flex: 1;
+      }
+      .cookie-header-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 6px;
+      }
+      .cookie-icon-capsule {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        border-radius: 10px;
+        background: rgba(0, 242, 254, 0.12);
+        border: 1px solid rgba(0, 242, 254, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .cookie-shield-icon {
+        width: 18px !important;
+        height: 18px !important;
+        min-width: 18px !important;
+        min-height: 18px !important;
+        max-width: 18px !important;
+        max-height: 18px !important;
+        color: #00f2fe;
+        display: block;
+      }
+      .cookie-title {
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin: 0;
+      }
+      .cookie-desc {
+        font-size: 0.84rem;
+        color: #94a3b8;
+        line-height: 1.55;
+        max-width: 580px;
+        margin: 4px 0 0 0;
+      }
+      .cookie-actions-col {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-shrink: 0;
+      }
+      .cookie-btn {
+        font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+        font-size: 0.85rem;
+        cursor: pointer;
+        padding: 10px 22px;
+        border-radius: 9999px;
+        transition: all 0.25s ease;
+        white-space: nowrap;
+        border: none;
+      }
+      .cookie-btn-secondary {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.14) !important;
+        color: #cbd5e1;
+        font-weight: 600;
+      }
+      .cookie-btn-primary {
+        background: linear-gradient(135deg, #00f2fe 0%, #38bdf8 100%);
+        color: #04060d;
+        font-weight: 700;
+        box-shadow: 0 4px 18px rgba(0, 242, 254, 0.35);
+      }
+      @media (max-width: 768px) {
+        .cookie-banner-inner {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 16px;
+          padding: 20px;
+          border-radius: 22px;
+        }
+        .cookie-actions-col {
+          width: 100%;
+          flex-direction: column;
+        }
+        .cookie-btn {
+          width: 100%;
+        }
+      }
+    </style>
 </head>
 <body>
     <!-- Top Scroll Progress Indicator -->
@@ -469,7 +603,7 @@
     <script src="script.js"></script>
 
     <!-- High-Precision Cookie Consent System (Borshon Glossy Pill) -->
-    <div id="cookie-banner" class="cookie-banner-wrapper" style="opacity: 0; pointer-events: none;">
+    <div id="cookie-banner" class="cookie-banner-wrapper" style="position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(140%); opacity: 0; pointer-events: none; z-index: 9999;">
         <div class="cookie-banner-inner">
             <div class="cookie-ambient-glow"></div>
             
