@@ -1,4 +1,20 @@
+# Lorapok Labs Search Engine Optimization Directive
 User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /cdn-cgi/
+
+# Premier Search Engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Twitterbot
 Allow: /
 
 Sitemap: https://aswitchi.lorapok.tech/sitemap.xml

@@ -6,28 +6,69 @@ WEBSITE_DIR = "website"
 DOMAIN = "https://aswitchi.lorapok.tech"
 
 def generate_sitemap():
+    today = datetime.now().strftime('%Y-%m-%d')
     sitemap = f"""<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>{DOMAIN}/</loc>
-    <lastmod>{datetime.now().strftime('%Y-%m-%d')}</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>{today}</lastmod>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>{DOMAIN}/#showcase</loc>
+    <lastmod>{today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>{DOMAIN}/#features</loc>
+    <lastmod>{today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>{DOMAIN}/#simulator</loc>
+    <lastmod>{today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>{DOMAIN}/#install</loc>
+    <lastmod>{today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
   </url>
 </urlset>"""
     with open(os.path.join(WEBSITE_DIR, "sitemap.xml"), "w") as f:
         f.write(sitemap)
-    print("✅ Generated sitemap.xml")
+    print("✅ Generated high-precision sitemap.xml with live timestamp")
 
 def generate_robots():
-    robots = f"""User-agent: *
+    robots = f"""# Lorapok Labs Search Engine Optimization Directive
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /cdn-cgi/
+
+# Premier Search Engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Twitterbot
 Allow: /
 
 Sitemap: {DOMAIN}/sitemap.xml
 """
     with open(os.path.join(WEBSITE_DIR, "robots.txt"), "w") as f:
         f.write(robots)
-    print("✅ Generated robots.txt")
+    print("✅ Generated enterprise robots.txt")
 
 def optimize_html():
     import urllib.request
