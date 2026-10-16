@@ -30,19 +30,20 @@ parts:
     - gir1.2-webkit2-4.1
     - libwebkit2gtk-4.1-0
     - libgtk-3-0
-    override-build: 'snapcraftctl build
-
+    override-build: |
+      craftctl default
       mkdir -p $SNAPCRAFT_PART_INSTALL/opt/aswitchi
-
-      cp -r src assets docs bin aswitchi_native.py $SNAPCRAFT_PART_INSTALL/opt/aswitchi/
-
-      '
+      mkdir -p $SNAPCRAFT_PART_INSTALL/usr/share/applications
+      cp -r src assets docs bin scripts aswitchi.desktop aswitchi_native.py $SNAPCRAFT_PART_INSTALL/opt/aswitchi/
+      cp aswitchi.desktop $SNAPCRAFT_PART_INSTALL/usr/share/applications/aswitchi.desktop
 apps:
   aswitchi:
     command: opt/aswitchi/bin/aswitchi
+    desktop: usr/share/applications/aswitchi.desktop
     environment:
       PYTHONPATH: $SNAP/opt/aswitchi
       GI_TYPELIB_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET/girepository-1.0:$SNAP/usr/lib/girepository-1.0
+      LD_LIBRARY_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET:$SNAP/usr/lib:$SNAP/lib/$CRAFT_ARCH_TRIPLET:$SNAP/lib:$LD_LIBRARY_PATH
 title: AswitchI
 icon: assets/icon.png
 license: GPL-3.0-or-later

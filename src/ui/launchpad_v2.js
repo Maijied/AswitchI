@@ -45,6 +45,10 @@ const ICON_FILES = {
 };
 
 function getIconSrc(key) {
+  if (!key) return 'icons/folder.svg';
+  if (typeof key === 'string' && (key.startsWith('http://') || key.startsWith('https://') || key.startsWith('file://') || key.startsWith('data:') || key.startsWith('/'))) {
+    return key;
+  }
   return ICON_FILES[key] || 'icons/folder.svg';
 }
 
@@ -281,7 +285,7 @@ function createAppElement(app) {
   item.innerHTML = `
     <div class="icon-box ${isLaunching}" id="icon-box-${app.id}">
       ${cornerBadge}
-      <img src="${iconSrc}" alt="${app.name}" draggable="false" />
+      <img src="${iconSrc}" alt="${app.name}" draggable="false" onerror="this.onerror=null;this.src='icons/folder.svg';" />
       ${badge}
       ${runningDot}
     </div>
@@ -333,7 +337,7 @@ function renderDock() {
     el.innerHTML = `
       <div class="dock-icon-box ${isLaunching}" id="dock-box-${app.id}">
         ${cornerBadge}
-        <img src="${iconSrc}" alt="${app.name}" draggable="false" />
+        <img src="${iconSrc}" alt="${app.name}" draggable="false" onerror="this.onerror=null;this.src='icons/folder.svg';" />
       </div>
       ${dot}
     `;
@@ -629,11 +633,13 @@ function setupEvents() {
     const name = document.getElementById('web-name').value;
     const url = document.getElementById('web-url').value;
     const desc = document.getElementById('web-desc').value;
+    const authorEl = document.getElementById('web-author');
+    const author = authorEl ? authorEl.value.trim() : '';
 
-    callNative('addWebAi', { name, url, description: desc });
+    callNative('addWebAi', { name, url, description: desc, author });
     modalWeb.classList.add('hidden');
     document.getElementById('form-web-ai').reset();
-    showToast(`Added ${name} to Launchpad!`);
+    showToast(`Added ${name} to Launchpad (fetching icon)...`);
   });
 
   // Project Modal

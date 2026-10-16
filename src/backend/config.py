@@ -150,8 +150,13 @@ def get_all_web_ais():
     cfg = get_config()
     custom = cfg.get("customWebAis", [])
     all_web = []
+    from . import icon_fetcher
     for item in DEFAULT_WEB_AIS + custom:
         item["type"] = "web"
+        # Check if high-resolution downloaded icon exists
+        cached = icon_fetcher.get_cached_icon_path(item.get("id"))
+        if cached:
+            item["icon"] = f"file://{cached}"
         all_web.append(item)
     return all_web
 
@@ -159,14 +164,29 @@ def add_custom_web_ai(entry):
     cfg = get_config()
     custom = cfg.get("customWebAis", [])
     new_id = f"custom-web-{int(os.times().system * 1000)}"
+    url = entry.get("url", "").strip()
+    name = entry.get("name", "").strip()
+    icon_val = entry.get("icon", "globe")
+
+    # Auto fetch icon from online or author branding
+    from . import icon_fetcher
+    fetched_path = None
+    if url:
+        fetched_path = icon_fetcher.fetch_and_cache_icon(url, new_id)
+    if not fetched_path and entry.get("author"):
+        fetched_path = icon_fetcher.fetch_author_ai_icon(entry["author"])
+
+    if fetched_path:
+        icon_val = f"file://{fetched_path}"
+
     item = {
         "id": new_id,
-        "name": entry.get("name", "").strip(),
-        "url": entry.get("url", "").strip(),
+        "name": name,
+        "url": url,
         "description": entry.get("description", "Custom Web AI"),
         "category": "web",
         "type": "web",
-        "icon": entry.get("icon", "globe"),
+        "icon": icon_val,
         "color": entry.get("color", "#3B82F6"),
         "custom": True
     }

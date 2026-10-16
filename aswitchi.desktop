@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=AswitchI
+GenericName=AI Launchpad & Switcher
+Comment=Native macOS Launchpad & AI Switcher for Ubuntu Linux
+Exec=aswitchi %U
+Icon=aswitchi
+Terminal=false
+StartupNotify=true
+Categories=Development;Utility;System;
+StartupWMClass=aswitchi_native.py
+Keywords=ai;switcher;launchpad;cursor;kiro;claude;devin;chatgpt;windsurf;

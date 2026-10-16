@@ -36,3 +36,12 @@ release-assets/
 *.swp
 *.swo
 *~
+
+# Secrets & Local Env
+.env
+.env.*
+*.env
+secret_*.txt
+*.secret
+test.yaml
+

@@ -454,26 +454,120 @@ def scan_projects():
     projects.sort(key=lambda x: x["lastModified"], reverse=True)
     return projects
 
-def scan_all():
+import time
+
+_CACHE_DESKTOP = None
+_CACHE_CLI = None
+_CACHE_PROJECTS = None
+_CACHE_PROJECTS_TIME = 0
+_LAST_RUNNING_STATE = {}
+
+def invalidate_cache():
+    global _CACHE_DESKTOP, _CACHE_CLI, _CACHE_PROJECTS, _CACHE_PROJECTS_TIME
+    _CACHE_DESKTOP = None
+    _CACHE_CLI = None
+    _CACHE_PROJECTS = None
+    _CACHE_PROJECTS_TIME = 0
+
+def scan_all(force_refresh=False):
+    global _CACHE_DESKTOP, _CACHE_CLI, _CACHE_PROJECTS, _CACHE_PROJECTS_TIME, _LAST_RUNNING_STATE
     cfg = get_config()
     proc = get_running_process_output()
-    desktop = scan_desktop_applications(proc)
-    cli = scan_cli_agents(proc)
+
+    if force_refresh or _CACHE_DESKTOP is None:
+        _CACHE_DESKTOP = scan_desktop_applications(proc)
+    else:
+        for app in _CACHE_DESKTOP:
+            for pat in KNOWN_DESKTOP_PATTERNS:
+                if pat["id"] == app["id"]:
+                    app["running"] = is_pattern_running(pat["match"], proc, pat.get("exclude"))
+                    break
+
+    if force_refresh or _CACHE_CLI is None:
+        _CACHE_CLI = scan_cli_agents(proc)
+    else:
+        for agent in _CACHE_CLI:
+            for ag in KNOWN_CLI_AGENTS:
+                if ag["id"] == agent["id"]:
+                    agent["running"] = is_pattern_running(ag["match"], proc, ag.get("exclude"))
+                    break
+
+    now = time.time()
+    if force_refresh or _CACHE_PROJECTS is None or (now - _CACHE_PROJECTS_TIME > 300):
+        _CACHE_PROJECTS = scan_projects()
+        _CACHE_PROJECTS_TIME = now
+
     web = get_all_web_ais()
-    projects = scan_projects()
     dock_ids = cfg.get("dockItemIds", [])
 
+    _LAST_RUNNING_STATE = {
+        item["id"]: item.get("running", False)
+        for item in (_CACHE_DESKTOP + _CACHE_CLI)
+    }
+
     return {
-        "desktopApps": desktop,
-        "cliAgents": cli,
+        "desktopApps": _CACHE_DESKTOP,
+        "cliAgents": _CACHE_CLI,
         "webAis": web,
-        "projects": projects,
+        "projects": _CACHE_PROJECTS,
         "dockItemIds": dock_ids,
         "summary": {
-            "totalInstalledAIs": len(desktop) + len(cli),
-            "desktopCount": len(desktop),
-            "cliCount": len(cli),
+            "totalInstalledAIs": len(_CACHE_DESKTOP) + len(_CACHE_CLI),
+            "desktopCount": len(_CACHE_DESKTOP),
+            "cliCount": len(_CACHE_CLI),
             "webCount": len(web),
-            "projectCount": len(projects)
+            "projectCount": len(_CACHE_PROJECTS)
         }
     }
+
+def check_running_status_changed():
+    """
+    Ultra-fast process status check: only inspects running process tree.
+    Returns (True, data) if any app changed running state, or (False, None) if unchanged.
+    """
+    global _CACHE_DESKTOP, _CACHE_CLI, _LAST_RUNNING_STATE
+    if _CACHE_DESKTOP is None or _CACHE_CLI is None:
+        return True, scan_all(force_refresh=True)
+
+    proc = get_running_process_output()
+    changed = False
+
+    for app in _CACHE_DESKTOP:
+        for pat in KNOWN_DESKTOP_PATTERNS:
+            if pat["id"] == app["id"]:
+                is_run = is_pattern_running(pat["match"], proc, pat.get("exclude"))
+                if is_run != app.get("running", False):
+                    app["running"] = is_run
+                    changed = True
+                break
+
+    for agent in _CACHE_CLI:
+        for ag in KNOWN_CLI_AGENTS:
+            if ag["id"] == agent["id"]:
+                is_run = is_pattern_running(ag["match"], proc, ag.get("exclude"))
+                if is_run != agent.get("running", False):
+                    agent["running"] = is_run
+                    changed = True
+                break
+
+    if changed:
+        cfg = get_config()
+        web = get_all_web_ais()
+        dock_ids = cfg.get("dockItemIds", [])
+        return True, {
+            "desktopApps": _CACHE_DESKTOP,
+            "cliAgents": _CACHE_CLI,
+            "webAis": web,
+            "projects": _CACHE_PROJECTS or [],
+            "dockItemIds": dock_ids,
+            "summary": {
+                "totalInstalledAIs": len(_CACHE_DESKTOP) + len(_CACHE_CLI),
+                "desktopCount": len(_CACHE_DESKTOP),
+                "cliCount": len(_CACHE_CLI),
+                "webCount": len(web),
+                "projectCount": len(_CACHE_PROJECTS or [])
+            }
+        }
+
+    return False, None
+

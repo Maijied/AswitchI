@@ -3,6 +3,9 @@ import sys
 import os
 import json
 import warnings
+import urllib.request
+import urllib.parse
+import threading
 from pathlib import Path
 
 # Suppress PyGObject deprecation notices
@@ -17,7 +20,7 @@ gi.require_version('Gtk', '3.0')
 gi.require_version('WebKit2', '4.1')
 from gi.repository import Gtk, WebKit2, GLib, Gdk, Gio
 
-from src.backend import scanner, executor, config
+from src.backend import scanner, executor, config, icon_fetcher
 
 def execute_js(webview, js):
     try:
@@ -107,6 +110,11 @@ class AswitchINativeApp(Gtk.ApplicationWindow):
         lp_settings.set_enable_developer_extras(False)
         lp_settings.set_allow_file_access_from_file_urls(True)
         lp_settings.set_allow_universal_access_from_file_urls(True)
+        try:
+            lp_settings.set_hardware_acceleration_policy(WebKit2.HardwareAccelerationPolicy.ALWAYS)
+            lp_settings.set_enable_accelerated_2d_canvas(True)
+        except Exception:
+            pass
 
         self.lp_webview = WebKit2.WebView.new_with_user_content_manager(self.ucm)
         self.lp_webview.set_settings(lp_settings)
@@ -151,6 +159,13 @@ class AswitchINativeApp(Gtk.ApplicationWindow):
         self.lbl_web_title.get_style_context().add_class("inapp-title")
         self.inapp_bar.pack_start(self.lbl_web_title, True, True, 0)
 
+        # Quick Save File/Media Button for Web AI View
+        self.btn_save_file = Gtk.Button(label="💾 Save...")
+        self.btn_save_file.get_style_context().add_class("inapp-btn")
+        self.btn_save_file.set_tooltip_text("Save image, video, page or file to any folder on your PC")
+        self.btn_save_file.connect("clicked", self.on_save_button_clicked)
+        self.inapp_bar.pack_end(self.btn_save_file, False, False, 0)
+
         self.btn_popout = Gtk.Button(label="↗ Standalone")
         self.btn_popout.get_style_context().add_class("inapp-btn")
         self.btn_popout.connect("clicked", self.on_popout_clicked)
@@ -167,16 +182,25 @@ class AswitchINativeApp(Gtk.ApplicationWindow):
         )
         self.web_context = WebKit2.WebContext.new_with_website_data_manager(self.data_manager)
 
+        # Connect download manager for saving files/images/videos to ANY chosen PC folder
+        self.web_context.connect("download-started", self.on_download_started)
+
         web_settings = WebKit2.Settings()
         web_settings.set_enable_javascript(True)
         web_settings.set_enable_developer_extras(False)
         web_settings.set_user_agent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36")
         web_settings.set_enable_webgl(True)
         web_settings.set_enable_smooth_scrolling(True)
+        try:
+            web_settings.set_hardware_acceleration_policy(WebKit2.HardwareAccelerationPolicy.ALWAYS)
+            web_settings.set_enable_accelerated_2d_canvas(True)
+        except Exception:
+            pass
 
         self.web_view = WebKit2.WebView.new_with_context(self.web_context)
         self.web_view.set_settings(web_settings)
         self.web_view.connect("load-changed", self.on_web_load_changed)
+        self.web_view.connect("context-menu", self.on_web_context_menu)
 
         self.web_box.pack_start(self.web_view, True, True, 0)
         self.stack.add_named(self.web_box, "web_viewer")
@@ -187,8 +211,162 @@ class AswitchINativeApp(Gtk.ApplicationWindow):
 
         self.current_web_item = None
 
-        # Periodic refresh for running processes
-        GLib.timeout_add_seconds(4, self.periodic_sync)
+        # Ultra-lightweight periodic refresh for running processes
+        GLib.timeout_add_seconds(3, self.periodic_sync)
+
+    def on_download_started(self, context, download):
+        """Intercepts all WebKit downloads and prompts user to pick destination on PC."""
+        download.connect("decide-destination", self.on_decide_destination)
+        download.connect("finished", self.on_download_finished)
+        download.connect("failed", self.on_download_failed)
+
+    def on_decide_destination(self, download, suggested_filename):
+        """Native GTK file dialog allowing user to choose ANY folder on PC."""
+        chooser = Gtk.FileChooserNative.new(
+            "Save File to Any Folder on PC",
+            self,
+            Gtk.FileChooserAction.SAVE,
+            "_Save",
+            "_Cancel"
+        )
+        if suggested_filename:
+            chooser.set_current_name(suggested_filename)
+        else:
+            chooser.set_current_name("download")
+
+        downloads_dir = str(Path.home() / "Downloads")
+        if os.path.exists(downloads_dir):
+            chooser.set_current_folder(downloads_dir)
+
+        response = chooser.run()
+        if response == Gtk.ResponseType.ACCEPT:
+            dest_filename = chooser.get_filename()
+            chooser.destroy()
+            download.set_destination(f"file://{dest_filename}")
+            self.notify_user(f"Saving to {Path(dest_filename).name}...")
+            return True
+        else:
+            chooser.destroy()
+            download.cancel()
+            return False
+
+    def on_download_finished(self, download):
+        dest = download.get_destination()
+        name = Path(dest.replace("file://", "")).name if dest else "File"
+        self.notify_user(f"✓ Saved {name} successfully!")
+
+    def on_download_failed(self, download, error):
+        self.notify_user(f"⚠️ Download failed: {error.message if hasattr(error, 'message') else error}")
+
+    def on_web_context_menu(self, webview, context_menu, event, hit_test_result):
+        """Custom context menu allowing right-click saving of images, videos, or links to any PC folder."""
+        try:
+            if hit_test_result.context_is_image():
+                img_uri = hit_test_result.get_image_uri()
+                if img_uri:
+                    act_name = "save_img_ctx"
+                    act = Gio.SimpleAction.new(act_name, None)
+                    act.connect("activate", lambda a, p: self.prompt_save_uri(img_uri, "image.png"))
+                    self.add_action(act)
+                    item = WebKit2.ContextMenuItem.new_from_gaction(act, "💾 Save Image to Any PC Folder...", None)
+                    context_menu.prepend(item)
+
+            if hit_test_result.context_is_media():
+                media_uri = hit_test_result.get_media_uri()
+                if media_uri:
+                    act_name = "save_media_ctx"
+                    act = Gio.SimpleAction.new(act_name, None)
+                    act.connect("activate", lambda a, p: self.prompt_save_uri(media_uri, "video.mp4"))
+                    self.add_action(act)
+                    item = WebKit2.ContextMenuItem.new_from_gaction(act, "🎬 Save Video to Any PC Folder...", None)
+                    context_menu.prepend(item)
+
+            if hit_test_result.context_is_link():
+                link_uri = hit_test_result.get_link_uri()
+                if link_uri:
+                    act_name = "save_link_ctx"
+                    act = Gio.SimpleAction.new(act_name, None)
+                    act.connect("activate", lambda a, p: self.prompt_save_uri(link_uri, "file"))
+                    self.add_action(act)
+                    item = WebKit2.ContextMenuItem.new_from_gaction(act, "📥 Save Link Target to PC Folder...", None)
+                    context_menu.prepend(item)
+        except Exception as e:
+            print("Context menu customization notice:", e)
+        return False
+
+    def on_save_button_clicked(self, btn):
+        """Allows user to save current page or enter a media/file URL to save to PC."""
+        current_uri = self.web_view.get_uri()
+        if not current_uri:
+            return
+        
+        # Determine default name
+        parsed = urllib.parse.urlparse(current_uri)
+        name = os.path.basename(parsed.path) or "webai_page.html"
+        self.prompt_save_uri(current_uri, name)
+
+    def prompt_save_uri(self, uri, default_name="file"):
+        """Prompts user with native file chooser to select ANY folder on PC to save a URI."""
+        chooser = Gtk.FileChooserNative.new(
+            "Choose PC Folder to Save File",
+            self,
+            Gtk.FileChooserAction.SAVE,
+            "_Save",
+            "_Cancel"
+        )
+        parsed = urllib.parse.urlparse(uri)
+        fname = os.path.basename(parsed.path) or default_name
+        chooser.set_current_name(fname)
+
+        downloads_dir = str(Path.home() / "Downloads")
+        if os.path.exists(downloads_dir):
+            chooser.set_current_folder(downloads_dir)
+
+        res = chooser.run()
+        if res == Gtk.ResponseType.ACCEPT:
+            dest_path = chooser.get_filename()
+            chooser.destroy()
+            self.download_uri_to_destination(uri, dest_path)
+        else:
+            chooser.destroy()
+
+    def download_uri_to_destination(self, uri, dest_path):
+        """Asynchronously downloads a file, image, or video to the chosen destination path."""
+        def _worker():
+            try:
+                if uri.startswith("file://"):
+                    import shutil
+                    shutil.copy2(uri.replace("file://", ""), dest_path)
+                elif uri.startswith("data:"):
+                    import base64
+                    header, data = uri.split(",", 1)
+                    file_data = base64.b64decode(data)
+                    with open(dest_path, "wb") as f:
+                        f.write(file_data)
+                else:
+                    req = urllib.request.Request(uri, headers={"User-Agent": "Mozilla/5.0"})
+                    with urllib.request.urlopen(req, timeout=20) as resp, open(dest_path, "wb") as f:
+                        f.write(resp.read())
+
+                GLib.idle_add(self.notify_user, f"✓ Saved: {Path(dest_path).name}")
+            except Exception as e:
+                try:
+                    download = self.web_context.download_uri(uri)
+                    download.set_destination(f"file://{dest_path}")
+                except Exception as e2:
+                    GLib.idle_add(self.notify_user, f"⚠️ Save failed: {e}")
+
+        threading.Thread(target=_worker, daemon=True).start()
+
+    def notify_user(self, text):
+        """Displays user feedback toast in launchpad or in-app title bar."""
+        if self.lbl_web_title and self.stack.get_visible_child_name() == "web_viewer":
+            prev = self.lbl_web_title.get_text()
+            self.lbl_web_title.set_text(text)
+            GLib.timeout_add_seconds(3, lambda: (self.lbl_web_title.set_text(prev), False)[1])
+        
+        js = f"if (window.showToast) {{ window.showToast({json.dumps(text)}); }}"
+        execute_js(self.lp_webview, js)
 
     def show_launchpad(self):
         self.stack.set_visible_child_name("launchpad")
@@ -228,15 +406,18 @@ class AswitchINativeApp(Gtk.ApplicationWindow):
                 return True
         return False
 
-    def send_scan_data(self):
-        data = scanner.scan_all()
+    def send_scan_data(self, data=None):
+        if data is None:
+            data = scanner.scan_all()
         data["appVersion"] = config.get_app_version()
         json_str = json.dumps(data)
         js = f"if (window.onNativeDataReceived) {{ window.onNativeDataReceived({json_str}); }}"
         execute_js(self.lp_webview, js)
 
     def periodic_sync(self):
-        self.send_scan_data()
+        changed, data = scanner.check_running_status_changed()
+        if changed and data:
+            self.send_scan_data(data)
         return True
 
     def on_js_message(self, ucm, js_result):
@@ -247,11 +428,27 @@ class AswitchINativeApp(Gtk.ApplicationWindow):
             action = msg.get("action")
 
             if action == "sync":
-                self.send_scan_data()
+                data = scanner.scan_all(force_refresh=True)
+                self.send_scan_data(data)
 
             elif action == "openInAppWeb":
                 item = msg.get("item", {})
                 self.open_web_ai(item)
+
+            elif action == "saveFile":
+                uri = msg.get("uri")
+                default_name = msg.get("name", "downloaded_file")
+                if uri:
+                    self.prompt_save_uri(uri, default_name)
+
+            elif action == "fetchIcon":
+                url = msg.get("url")
+                icon_id = msg.get("id")
+                if url:
+                    def _async_fetch():
+                        icon_fetcher.fetch_and_cache_icon(url, icon_id)
+                        GLib.idle_add(lambda: self.send_scan_data())
+                    threading.Thread(target=_async_fetch, daemon=True).start()
 
             elif action == "launch":
                 item_type = msg.get("type")

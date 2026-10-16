@@ -185,35 +185,12 @@
             <span class="about-val"><strong>Lorapok Labs</strong> (Dhaka, Bangladesh)</span>
           </div>
           <div class="about-row">
-            <span class="about-label">👤 Founder:</span>
+            <span class="about-label">👤 Founder & Architect:</span>
             <span class="about-val"><strong>Mohammad Maizied Hasan Majumder</strong></span>
           </div>
           <div class="about-row">
             <span class="about-label">🌐 Ecosystem:</span>
             <span class="about-val">Lorapok Atlas, Media Player, ReportKit UI, Laravel Monitor, Linpad</span>
-          </div>
-        </div>
-
-        <div class="about-description">
-          <p>Developed by <strong>Lorapok Labs</strong> to provide developers on Linux with a fluid, high-performance macOS Launchpad experience for navigating AI IDEs, CLI autonomous agents, and persistent Web AIs.</p>
-          <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center;">
-            <button class="glass-btn" onclick="window.open('https://aswitchi.lorapok.tech')">Official Website</button>
-          </div>
-        </div>
-        </div>
-
-        <div class="about-card">
-          <div class="about-row">
-            <span class="about-label">🏢 Organization:</span>
-            <span class="about-val"><strong>Lorapok Labs</strong></span>
-          </div>
-          <div class="about-row">
-            <span class="about-label">👤 Founder:</span>
-            <span class="about-val"><strong>Maizied</strong> (Founder & Lead Architect)</span>
-          </div>
-          <div class="about-row">
-            <span class="about-label">🌐 Ecosystem:</span>
-            <span class="about-val">Autonomous Coding Agents, Kiro, AGY, Neural Launchpads</span>
           </div>
           <div class="about-row">
             <span class="about-label">💻 Platform:</span>
@@ -223,6 +200,10 @@
 
         <div class="about-description">
           <p>Developed by <strong>Lorapok Labs</strong> to provide developers on Ubuntu Linux with a fluid, high-performance macOS Launchpad experience for navigating AI IDEs, CLI autonomous agents, and persistent Web AIs.</p>
+          <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center;">
+            <button class="glass-btn" onclick="window.open('https://aswitchi.lorapok.tech')">Official Website</button>
+            <button class="glass-btn" onclick="window.open('https://github.com/Maijied/AswitchI')">GitHub Repository</button>
+          </div>
         </div>
       </div>
 
@@ -243,15 +224,23 @@
       <form id="form-web-ai" class="modal-body">
         <div class="form-group">
           <label>AI Application Name</label>
-          <input type="text" id="web-name" required placeholder="e.g. Midjourney, Cursor Studio" />
+          <input type="text" id="web-name" required placeholder="e.g. Midjourney, Cursor Studio, Sora" />
         </div>
         <div class="form-group">
           <label>Web Application URL</label>
           <input type="url" id="web-url" required placeholder="https://..." />
         </div>
         <div class="form-group">
+          <label>Author / AI Creator (Optional)</label>
+          <input type="text" id="web-author" placeholder="e.g. OpenAI, Anthropic, or GitHub handle" />
+        </div>
+        <div class="form-group">
           <label>Description / Notes</label>
           <input type="text" id="web-desc" placeholder="Model or purpose" />
+        </div>
+        <div style="font-size:11px; color:#38bdf8; display:flex; align-items:center; gap:5px;">
+          <span>⚡</span>
+          <span>High-res icons are automatically fetched & cached from the web or author AI.</span>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn-mac-secondary" id="modal-cancel">Cancel</button>
